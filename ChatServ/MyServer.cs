@@ -1,4 +1,4 @@
-﻿using ChatServ.Commands;
+﻿using Newtonsoft.Json;
 using SuperSocket.SocketBase;
 using SuperSocket.WebSocket;
 using System;
@@ -24,8 +24,7 @@ namespace ChatServ
         public event NewDataRecieved OnNewDataRecieved;
         public event NewSessionConnected OnNewSessionConnected;
         public event NewMessageRecieved OnNewMessageRecieved;
-
-        public Commander Command;
+        
         public List<Client> Clients { get; set; }
 
         private WebSocketServer appServer;
@@ -39,8 +38,7 @@ namespace ChatServ
             _ipadress = ipadress;
             _port = port;
             appServer = new WebSocketServer();
-            Command = new Commander();
-            
+                        
             appServer.NewMessageReceived += new SessionHandler<WebSocketSession, string>(AppServer_NewMessageReceived);
             appServer.NewSessionConnected += new SessionHandler<WebSocketSession>(AppServer_NewSessionConnected);
             appServer.NewDataReceived += new SessionHandler<WebSocketSession, byte[]>(AppServer_NewDataReceived);
@@ -59,12 +57,50 @@ namespace ChatServ
 
         private void AppServer_NewSessionConnected(WebSocketSession session)
         {
-            OnNewSessionConnected(session);
+            SendId(session);
+            OnNewSessionConnected?.Invoke(session);
+        }
+
+        private void SendId(WebSocketSession session)
+        {
+            Client cl = new Client();
+            Comm comm = new Comm();
+            string value = "";
+            cl.IdSession = session.SessionID;
+            cl.TimeIn = DateTime.Now;
+            comm.CommName = "NEWUSER";
+            comm.Body = cl;
+            Clients.Add(cl);
+            value = JsonConvert.SerializeObject(comm, Formatting.None);
+            session.Send(value);
         }
 
         private void AppServer_NewMessageReceived(WebSocketSession session, string value)
         {
-            OnNewMessageRecieved(session, value);
+            ControllerCommandIn(value);
+            OnNewMessageRecieved?.Invoke(session, value);
+        }
+
+        private void ControllerCommandIn(string value)
+        {
+            Client cli = new Client();
+            Comm comm = JsonConvert.DeserializeObject<Comm>(value);
+            string commandName = comm.CommName;
+            cli = JsonConvert.DeserializeObject<Client>(comm.Body.ToString());
+
+            switch (commandName)
+            {
+                case "NEWUSER":
+                    
+                    //отправить инфу для клиента (всех активных и неактивных пользователей сети)
+                    Console.WriteLine("Все клиенты и не только");     
+                    string json = "";
+                    value = json;
+                    break;
+                default:
+                    
+                    break;
+            }
         }
 
         public void Setup()
@@ -123,6 +159,12 @@ namespace ChatServ
             string value = "";
 
             return value;
+        }
+
+        private class Comm
+        {
+            public string CommName { get; set; }
+            public Object Body { get; set; }
         }
     }
 }

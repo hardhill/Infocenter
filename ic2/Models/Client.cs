@@ -1,8 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace ChatServ
+namespace ic2.Models
 {
-    internal class Client
+    class Client
     {
         public string IdSession { get; set; }
         public string UserName { get; set; }

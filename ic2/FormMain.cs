@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -17,18 +18,23 @@ namespace ic2
         
         
         private bool allowshowdisplay = true;
-        
 
+
+        //during init of your application bind to this event  
+        
         public FormMessage formMessage = new FormMessage();
 
         public IMessageFilter messageFilter { get; private set; }
 
         public FormMain()
         {
+            
             InitializeComponent();
             Visible = true;
         }
-        
+
+       
+
         protected override void SetVisibleCore(bool value)
         {
             base.SetVisibleCore(allowshowdisplay ? value : allowshowdisplay);

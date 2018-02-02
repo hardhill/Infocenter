@@ -90,7 +90,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\Client.cs" />
-    <Compile Include="Commands\Commander.cs" />
     <Compile Include="DbChat.cs" />
     <Compile Include="FormServer.cs">
       <SubType>Form</SubType>
@@ -132,8 +131,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
