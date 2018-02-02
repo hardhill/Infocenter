@@ -46,7 +46,6 @@ namespace ChatServ
         //новый клиент подсоединился (новая сессия)
         private void MyServer_OnNewSessionConnected(WebSocketSession session)
         {
-            
             session.Send(myServer.Command.NewServerUser(myServer.Clients, session));
         }
 
