@@ -97,6 +97,7 @@
     <Compile Include="FormServer.Designer.cs">
       <DependentUpon>FormServer.cs</DependentUpon>
     </Compile>
+    <Compile Include="Models\ContactUser.cs" />
     <Compile Include="Models\Person.cs" />
     <Compile Include="MyServer.cs" />
     <Compile Include="Program.cs" />

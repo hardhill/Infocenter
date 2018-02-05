@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using ChatServ.Models;
+using Newtonsoft.Json;
 using SuperSocket.SocketBase;
 using SuperSocket.WebSocket;
 using System;
@@ -25,7 +26,8 @@ namespace ChatServ
         public event NewSessionConnected OnNewSessionConnected;
         public event NewMessageRecieved OnNewMessageRecieved;
         
-        public List<Client> Clients { get; set; }
+        private List<WebSocketSession> Sessions { get; set; }
+        public List<Client> Clients = new List<Client>();
 
         private WebSocketServer appServer;
         private string _ipadress;
@@ -47,6 +49,7 @@ namespace ChatServ
 
         private void AppServer_SessionClose(WebSocketSession session, CloseReason value)
         {
+            Sessions.Remove(session);
             OnSessionClose?.Invoke(session, value);
         }
 
@@ -57,6 +60,7 @@ namespace ChatServ
 
         private void AppServer_NewSessionConnected(WebSocketSession session)
         {
+            Sessions.Add(session);
             SendId(session);
             OnNewSessionConnected?.Invoke(session);
         }
@@ -68,9 +72,8 @@ namespace ChatServ
             string value = "";
             cl.IdSession = session.SessionID;
             cl.TimeIn = DateTime.Now;
-            comm.CommName = "NEWUSER";
+            comm.CommName = "SENDID";
             comm.Body = cl;
-            Clients.Add(cl);
             value = JsonConvert.SerializeObject(comm, Formatting.None);
             session.Send(value);
         }
@@ -83,23 +86,59 @@ namespace ChatServ
 
         private void ControllerCommandIn(string value)
         {
-            Client cli = new Client();
+            
             Comm comm = JsonConvert.DeserializeObject<Comm>(value);
             string commandName = comm.CommName;
-            cli = JsonConvert.DeserializeObject<Client>(comm.Body.ToString());
+            
 
             switch (commandName)
             {
                 case "NEWUSER":
-                    
-                    //отправить инфу для клиента (всех активных и неактивных пользователей сети)
-                    Console.WriteLine("Все клиенты и не только");     
-                    string json = "";
-                    value = json;
+                    Client cli = new Client();
+                    //разбираем тело команды
+                    cli = JsonConvert.DeserializeObject<Client>(comm.Body.ToString());
+                    //проверка на пользователя в БД
+                    if (CheckUserName(cli.UserName))
+                    {
+                        List<ContactUser> contacts = new List<ContactUser>();
+                        Clients.Add(new Client() { IdSession = cli.IdSession, UserName = cli.UserName });
+                        FillContacts(contacts);
+                        //отправить инфу для клиента (всех активных и неактивных пользователей сети)
+                        Comm comm_res = new Comm() { CommName = "NEWUSER", Body = contacts };
+                        value = JsonConvert.SerializeObject(comm_res);
+                        appServer.Broadcast(Sessions, value, null);
+                    }
+                   
                     break;
                 default:
                     
                     break;
+            }
+        }
+
+        private bool CheckUserName(string userName)
+        {
+            bool ch;
+            DbChat dbChat = new DbChat("MongoDb");
+            ch = dbChat.FindUser(userName);
+            return ch;
+        }
+
+        //заполнить список контактов присоединенных и из БД
+        private void FillContacts(List<ContactUser> contacts)
+        {
+            DbChat dbChat = new DbChat("MongoDb");
+            List<Person> allPerson = new List<Person>();
+            allPerson.AddRange(dbChat.All());
+            foreach(var cli in Clients)
+            {
+                string winlogin = cli.UserName;
+                string id = cli.IdSession;
+                string fa = allPerson.Find(x => x.Winlogin == winlogin).Fa;
+                string im = allPerson.Find(x => x.Winlogin == winlogin).Im;
+                string ot = allPerson.Find(x => x.Winlogin == winlogin).Ot;
+                long dt = allPerson.Find(x => x.Winlogin == winlogin).Bday;
+                contacts.Add(new ContactUser() { SessionId = id, Winlogin = winlogin, Fa = fa, Im = im, Ot = ot, Bday = new DateTime(dt) });
             }
         }
 

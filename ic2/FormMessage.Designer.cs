@@ -29,17 +29,17 @@
         private void InitializeComponent()
         {
             this.pnlContact = new System.Windows.Forms.Panel();
-            this.pnlMessages = new System.Windows.Forms.Panel();
+            this.lstContacts = new System.Windows.Forms.ListBox();
             this.pnlFindCont = new System.Windows.Forms.Panel();
             this.txtFindCont = new System.Windows.Forms.TextBox();
-            this.lstContacts = new System.Windows.Forms.ListBox();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.panel2 = new System.Windows.Forms.Panel();
+            this.pnlMessages = new System.Windows.Forms.Panel();
             this.lstDialog = new System.Windows.Forms.ListBox();
+            this.panel2 = new System.Windows.Forms.Panel();
             this.txtMessage = new System.Windows.Forms.TextBox();
+            this.panel1 = new System.Windows.Forms.Panel();
             this.pnlContact.SuspendLayout();
-            this.pnlMessages.SuspendLayout();
             this.pnlFindCont.SuspendLayout();
+            this.pnlMessages.SuspendLayout();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -53,16 +53,14 @@
             this.pnlContact.Size = new System.Drawing.Size(300, 360);
             this.pnlContact.TabIndex = 0;
             // 
-            // pnlMessages
+            // lstContacts
             // 
-            this.pnlMessages.Controls.Add(this.lstDialog);
-            this.pnlMessages.Controls.Add(this.panel2);
-            this.pnlMessages.Controls.Add(this.panel1);
-            this.pnlMessages.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlMessages.Location = new System.Drawing.Point(300, 0);
-            this.pnlMessages.Name = "pnlMessages";
-            this.pnlMessages.Size = new System.Drawing.Size(342, 360);
-            this.pnlMessages.TabIndex = 1;
+            this.lstContacts.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lstContacts.FormattingEnabled = true;
+            this.lstContacts.Location = new System.Drawing.Point(0, 47);
+            this.lstContacts.Name = "lstContacts";
+            this.lstContacts.Size = new System.Drawing.Size(300, 313);
+            this.lstContacts.TabIndex = 1;
             // 
             // pnlFindCont
             // 
@@ -80,31 +78,16 @@
             this.txtFindCont.Size = new System.Drawing.Size(271, 20);
             this.txtFindCont.TabIndex = 0;
             // 
-            // lstContacts
+            // pnlMessages
             // 
-            this.lstContacts.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lstContacts.FormattingEnabled = true;
-            this.lstContacts.Location = new System.Drawing.Point(0, 47);
-            this.lstContacts.Name = "lstContacts";
-            this.lstContacts.Size = new System.Drawing.Size(300, 313);
-            this.lstContacts.TabIndex = 1;
-            // 
-            // panel1
-            // 
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel1.Location = new System.Drawing.Point(0, 0);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(342, 47);
-            this.panel1.TabIndex = 0;
-            // 
-            // panel2
-            // 
-            this.panel2.Controls.Add(this.txtMessage);
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel2.Location = new System.Drawing.Point(0, 307);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(342, 53);
-            this.panel2.TabIndex = 1;
+            this.pnlMessages.Controls.Add(this.lstDialog);
+            this.pnlMessages.Controls.Add(this.panel2);
+            this.pnlMessages.Controls.Add(this.panel1);
+            this.pnlMessages.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlMessages.Location = new System.Drawing.Point(300, 0);
+            this.pnlMessages.Name = "pnlMessages";
+            this.pnlMessages.Size = new System.Drawing.Size(342, 360);
+            this.pnlMessages.TabIndex = 1;
             // 
             // lstDialog
             // 
@@ -115,12 +98,29 @@
             this.lstDialog.Size = new System.Drawing.Size(342, 260);
             this.lstDialog.TabIndex = 2;
             // 
+            // panel2
+            // 
+            this.panel2.Controls.Add(this.txtMessage);
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel2.Location = new System.Drawing.Point(0, 307);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(342, 53);
+            this.panel2.TabIndex = 1;
+            // 
             // txtMessage
             // 
             this.txtMessage.Location = new System.Drawing.Point(68, 19);
             this.txtMessage.Name = "txtMessage";
             this.txtMessage.Size = new System.Drawing.Size(222, 20);
             this.txtMessage.TabIndex = 0;
+            // 
+            // panel1
+            // 
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel1.Location = new System.Drawing.Point(0, 0);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(342, 47);
+            this.panel1.TabIndex = 0;
             // 
             // FormMessage
             // 
@@ -138,9 +138,9 @@
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FormMessage_FormClosed);
             this.Load += new System.EventHandler(this.FormMessage_Load);
             this.pnlContact.ResumeLayout(false);
-            this.pnlMessages.ResumeLayout(false);
             this.pnlFindCont.ResumeLayout(false);
             this.pnlFindCont.PerformLayout();
+            this.pnlMessages.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             this.ResumeLayout(false);

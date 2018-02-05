@@ -27,5 +27,11 @@ namespace ChatServ
             lst = collection.Find(_ => true).ToList();
             return lst;
         }
+
+        internal bool FindUser(string userName)
+        {
+            long n = collection.Count(x => x.Winlogin == userName);
+            return n > 0;
+        }
     }
 }

@@ -136,6 +136,7 @@
       <DependentUpon>FormOP.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\Client.cs" />
+    <Compile Include="Models\ContactUser.cs" />
     <Compile Include="Models\Person.cs" />
     <Compile Include="MyClient.cs" />
     <Compile Include="Program.cs" />

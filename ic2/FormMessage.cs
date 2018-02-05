@@ -25,13 +25,17 @@ namespace ic2
             myClient = new MyClient("ws://127.0.0.1:3000", "");
             myClient.OnErrorClient += MyClient_OnErrorClient;
             myClient.OnMessageRecievedClient += MyClient_OnMessageRecievedClient;
-            if (myClient.SystemLogin())
+           
+            if (myClient.SystemLogined())
             {
+               
                 myClient.StartClient();
             }
             else
                 myClient.Free();
         }
+
+        
 
         //реагируем на события системы
         private void SystemEvents_SessionSwitch(object sender, SessionSwitchEventArgs e)
@@ -60,6 +64,7 @@ namespace ic2
 
         private void MyClient_OnErrorClient(object sender, SuperSocket.ClientEngine.ErrorEventArgs e)
         {
+            
             Console.WriteLine(e.Exception.Message);
         }
 
@@ -81,8 +86,6 @@ namespace ic2
         {
             if(myClient!=null)myClient.StopClient();
         }
-
-        
 
         
     }
