@@ -46,9 +46,9 @@ namespace ic2
             this.version = WebSocketVersion.Rfc6455;
 
             this.Active = false;
-            this.timer1 = new Timer(new TimerCallback(TickTimer1),null,1000,3000);
+            //this.timer1 = new Timer(new TimerCallback(TickTimer1),null,1000,3000);
             webSocket = new WebSocket(this.url, this.protocol, this.version);
-            //webSocket.AutoSendPingInterval = 2000;
+            webSocket.AutoSendPingInterval = 2000;
             
             webSocket.Closed += WebSocket_Closed;
             webSocket.DataReceived += WebSocket_DataReceived;
