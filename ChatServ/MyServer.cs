@@ -25,8 +25,8 @@ namespace ChatServ
         public event NewDataRecieved OnNewDataRecieved;
         public event NewSessionConnected OnNewSessionConnected;
         public event NewMessageRecieved OnNewMessageRecieved;
-        
-        private List<WebSocketSession> Sessions { get; set; }
+
+        private List<WebSocketSession> Sessions = new List<WebSocketSession>();
         public List<Client> Clients = new List<Client>();
 
         private WebSocketServer appServer;

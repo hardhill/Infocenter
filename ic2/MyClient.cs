@@ -18,13 +18,13 @@ namespace ic2
         public delegate void ErrorClient(object sender, SuperSocket.ClientEngine.ErrorEventArgs e);
         public delegate void OpenedClient(object sender, EventArgs e);
         public delegate void MessageRecievedClient(object sender, MessageReceivedEventArgs e);
+        public delegate void ChangeContactList(List<ContactUser> contacts);
         public event CloseSocket OnCloseSocket;
         public event DataRecieved OnDataRecieved;
         public event ErrorClient OnErrorClient;
-
-
         public event OpenedClient OnOpenedClient;
         public event MessageRecievedClient OnMessageRecievedClient;
+        public event ChangeContactList OnChangeContactList;
 
         private string url;
         private string protocol;
@@ -35,6 +35,7 @@ namespace ic2
         private string _username;
         private Timer timer1;
         internal bool Active;
+        List<ContactUser> contacts = new List<ContactUser>();
 
         public string UserName { get { return _username; }}
 
@@ -159,9 +160,8 @@ namespace ic2
                     value = json;
                     break;
                 case "NEWUSER":
-                    List<ContactUser> contacts = new List<ContactUser>();
                     contacts = JsonConvert.DeserializeObject<List<ContactUser>>(comm.Body.ToString());
-                    Console.WriteLine(contacts.ToString());
+                    OnChangeContactList(contacts);
                     break;
                 default:
                     StopClient();

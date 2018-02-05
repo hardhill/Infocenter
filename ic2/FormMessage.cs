@@ -25,6 +25,7 @@ namespace ic2
             myClient = new MyClient("ws://127.0.0.1:3000", "");
             myClient.OnErrorClient += MyClient_OnErrorClient;
             myClient.OnMessageRecievedClient += MyClient_OnMessageRecievedClient;
+            myClient.OnChangeContactList += MyClient_OnChangeContactList;
            
             if (myClient.SystemLogined())
             {
@@ -35,7 +36,17 @@ namespace ic2
                 myClient.Free();
         }
 
-        
+        //событие - изменение списка контактов
+        private void MyClient_OnChangeContactList(List<ContactUser> contacts)
+        {
+            lstContacts.Items.Clear();
+            foreach(var cont in contacts)
+            {
+                lstContacts.Items.Add(String.Format("{0} {1} {2}",cont.Fa,cont.Im,cont.Ot));
+            }
+        }
+
+
 
         //реагируем на события системы
         private void SystemEvents_SessionSwitch(object sender, SessionSwitchEventArgs e)
