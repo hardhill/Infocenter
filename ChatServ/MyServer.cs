@@ -4,6 +4,7 @@ using SuperSocket.SocketBase;
 using SuperSocket.WebSocket;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace ChatServ
 {
@@ -49,8 +50,21 @@ namespace ChatServ
 
         private void AppServer_SessionClose(WebSocketSession session, CloseReason value)
         {
-            Sessions.Remove(session);
-            OnSessionClose?.Invoke(session, value);
+           Sessions.Remove(session);
+           var sessid = session.SessionID;
+           CheckOutWorker(sessid);
+           OnSessionClose?.Invoke(session, value);
+        }
+
+        private void CheckOutWorker(string sessid)
+        {
+            DbChat db = new DbChat("MongoDb");
+            Client cli = Clients.Find(x => x.IdSession == sessid);
+            if (cli != null)
+            {
+                db.CheckOutWorker(cli.UserName).GetAwaiter().GetResult();
+            }
+            
         }
 
         private void AppServer_NewDataReceived(WebSocketSession session, byte[] value)
@@ -62,7 +76,18 @@ namespace ChatServ
         {
             Sessions.Add(session);
             SendId(session);
+            
             OnNewSessionConnected?.Invoke(session);
+        }
+
+        private void CheckInWorker(string sessionID)
+        {
+            DbChat db = new DbChat("MongoDb");
+            Client cli = Clients.Find(x => x.IdSession == sessionID);
+            if (cli != null)
+            {
+                db.CheckInWorker(cli.UserName).GetAwaiter().GetResult();
+            }
         }
 
         private void SendId(WebSocketSession session)
@@ -102,6 +127,8 @@ namespace ChatServ
                     {
                         List<ContactUser> contacts = new List<ContactUser>();
                         Clients.Add(new Client() { IdSession = cli.IdSession, UserName = cli.UserName });
+                        //зачекинить пользователя
+                        CheckInWorker(cli.IdSession);
                         FillContacts(contacts);
                         //отправить инфу для клиента (всех активных и неактивных пользователей сети)
                         Comm comm_res = new Comm() { CommName = "NEWUSER", Body = contacts };
@@ -109,6 +136,11 @@ namespace ChatServ
                         appServer.Broadcast(Sessions, value, null);
                     }
                    
+                    break;
+                case "CONNECT":
+                    Client cli_connected = new Client();
+                    cli_connected = JsonConvert.DeserializeObject<Client>(comm.Body.ToString());
+
                     break;
                 default:
                     
@@ -120,13 +152,14 @@ namespace ChatServ
         {
             bool ch;
             DbChat dbChat = new DbChat("MongoDb");
-            ch = dbChat.FindUser(userName);
+            ch = dbChat.ContainUser(userName);
             return ch;
         }
 
         //заполнить список контактов присоединенных и из БД
         private void FillContacts(List<ContactUser> contacts)
         {
+            contacts.Clear();
             DbChat dbChat = new DbChat("MongoDb");
             List<Person> allPerson = new List<Person>();
             allPerson.AddRange(dbChat.All());

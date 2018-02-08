@@ -6,32 +6,48 @@ using System.Text;
 using System.Threading.Tasks;
 using ChatServ.Models;
 using System.Configuration;
+using MongoDB.Bson;
 
 namespace ChatServ
 {
     class DbChat
     {
-        private IMongoCollection<Person> collection;
+        private IMongoCollection<Person> coll_people;
+        private IMongoCollection<Tracking> coll_tracking;
         private IMongoDatabase db;
         public DbChat(string connectionString)
         {
             string con = ConfigurationManager.ConnectionStrings[connectionString].ConnectionString;
             MongoClient client = new MongoClient(con);
             db = client.GetDatabase("infocenter");
-            collection = db.GetCollection<Person>("people");
+            coll_people = db.GetCollection<Person>("people");
+            coll_tracking = db.GetCollection<Tracking>("tracking");
         }
                 
         public List<Person> All()
         {
             List<Person> lst = new List<Person>();
-            lst = collection.Find(_ => true).ToList();
+            lst = coll_people.Find(_ => true).ToList();
             return lst;
         }
 
-        internal bool FindUser(string userName)
+        internal bool ContainUser(string userName)
         {
-            long n = collection.Count(x => x.Winlogin == userName);
+            long n = coll_people.Count(x => x.Winlogin == userName);
             return n > 0;
+        }
+
+        internal async Task CheckOutWorker(string winlogin)
+        {
+            var filter = Builders<Tracking>.Filter.Eq("Winlogin", winlogin);
+            var update = Builders<Tracking>.Update.Set("DateOut", DateTime.Now.Ticks);
+            var result = await coll_tracking.UpdateOneAsync(filter, update);
+        }
+
+        internal async Task CheckInWorker(string userName)
+        {
+            Tracking tracking = new Tracking() { Winlogin = userName,DateIn = DateTime.Now.Ticks, DateOut=0 };
+            await coll_tracking.InsertOneAsync(tracking);
         }
     }
 }

@@ -79,12 +79,13 @@ namespace ic2
             webSocket.Send(value);
             OnMessageRecievedClient?.Invoke(sender,e);
         }
-
+        //соединение установлено
         private void WebSocket_Opened(object sender, EventArgs e)
         {
             if (webSocket.State == WebSocketState.Open)
             {
                 Active = true;
+                //
                 //timer1.Change(0, Timeout.Infinite);
             }
             OnOpenedClient?.Invoke(sender,e);
@@ -136,7 +137,9 @@ namespace ic2
         internal bool SystemLogined()
         {
             //логин пользователя
-            _username = WindowsIdentity.GetCurrent().Name;
+            var s = WindowsIdentity.GetCurrent().Name;
+            var n = s.LastIndexOf('\\');
+            _username = s.Substring(n+1);
             return (_username != null);
         }
 

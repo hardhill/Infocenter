@@ -23,6 +23,7 @@ namespace ic2
             SystemEvents.SessionSwitch += SystemEvents_SessionSwitch;
             InitializeComponent();
             myClient = new MyClient("ws://127.0.0.1:3000", "");
+            //myClient = new MyClient("http://127.0.0.1:3001", "");
             myClient.OnErrorClient += MyClient_OnErrorClient;
             myClient.OnMessageRecievedClient += MyClient_OnMessageRecievedClient;
             myClient.OnChangeContactList += MyClient_OnChangeContactList;
@@ -54,8 +55,10 @@ namespace ic2
             switch (e.Reason)
             {
                 case SessionSwitchReason.SessionLock:
+                    myClient.StartClient();
                     break;
                 case SessionSwitchReason.SessionUnlock:
+                    myClient.StopClient();
                     break;
                 case SessionSwitchReason.SessionLogon:
                     break;
