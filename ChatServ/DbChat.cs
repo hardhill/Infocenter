@@ -39,7 +39,8 @@ namespace ChatServ
 
         internal async Task CheckOutWorker(string winlogin)
         {
-            var filter = Builders<Tracking>.Filter.Eq("Winlogin", winlogin);
+            var builder = Builders<Tracking>.Filter;
+            var filter = builder.Eq("Winlogin", winlogin)&builder.Eq("DateOut",0)&builder.Lt("DateIn",DateTime.Now.Ticks);
             var update = Builders<Tracking>.Update.Set("DateOut", DateTime.Now.Ticks);
             var result = await coll_tracking.UpdateOneAsync(filter, update);
         }

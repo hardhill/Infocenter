@@ -109,10 +109,10 @@ namespace ChatServ
             OnNewMessageRecieved?.Invoke(session, value);
         }
 
-        private void ControllerCommandIn(string value)
+        private string ControllerCommandIn(string commandvalue)
         {
-            
-            Comm comm = JsonConvert.DeserializeObject<Comm>(value);
+            string returnjson = "";
+            Comm comm = JsonConvert.DeserializeObject<Comm>(commandvalue);
             string commandName = comm.CommName;
             
 
@@ -122,18 +122,19 @@ namespace ChatServ
                     Client cli = new Client();
                     //разбираем тело команды
                     cli = JsonConvert.DeserializeObject<Client>(comm.Body.ToString());
-                    //проверка на пользователя в БД
+                    //проверка на пользователя в БД (есть ли такой пользователь)
                     if (CheckUserName(cli.UserName))
                     {
                         List<ContactUser> contacts = new List<ContactUser>();
                         Clients.Add(new Client() { IdSession = cli.IdSession, UserName = cli.UserName });
-                        //зачекинить пользователя
+                        //зачекинить пользователя в БД
                         CheckInWorker(cli.IdSession);
+                        //заполнить список всех контактов
                         FillContacts(contacts);
                         //отправить инфу для клиента (всех активных и неактивных пользователей сети)
                         Comm comm_res = new Comm() { CommName = "NEWUSER", Body = contacts };
-                        value = JsonConvert.SerializeObject(comm_res);
-                        appServer.Broadcast(Sessions, value, null);
+                        returnjson = JsonConvert.SerializeObject(comm_res);
+                        appServer.Broadcast(Sessions, returnjson, null);
                     }
                    
                     break;
@@ -146,6 +147,7 @@ namespace ChatServ
                     
                     break;
             }
+            return returnjson;
         }
 
         private bool CheckUserName(string userName)

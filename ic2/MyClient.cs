@@ -75,7 +75,7 @@ namespace ic2
         private void WebSocket_MessageReceived(object sender, MessageReceivedEventArgs e)
         {
             string value = e.Message;
-            ControllerCommandIn(ref value);
+            value = ControllerCommandIn(value);
             webSocket.Send(value);
             OnMessageRecievedClient?.Invoke(sender,e);
         }
@@ -144,9 +144,9 @@ namespace ic2
         }
 
         //процессор приема сообщений
-        private void ControllerCommandIn(ref string value)
+        private string ControllerCommandIn(string value)
         {
-            
+            string returnjson="{}";
             Comm comm = JsonConvert.DeserializeObject<Comm>(value);
             string commandName = comm.CommName;
             
@@ -160,16 +160,18 @@ namespace ic2
                     //отправить инфу для сервера
                     Comm comm_resp = new Comm() { CommName = "NEWUSER", Body = new Client() { UserName = this.UserName, IdSession = GetId() } };
                     string json = JsonConvert.SerializeObject(comm_resp);
-                    value = json;
+                    returnjson = json;
                     break;
                 case "NEWUSER":
                     contacts = JsonConvert.DeserializeObject<List<ContactUser>>(comm.Body.ToString());
+                    //инициировать событие
                     OnChangeContactList(contacts);
                     break;
                 default:
                     StopClient();
                     break;
             }
+            return returnjson;
         }
 
 
