@@ -99,6 +99,7 @@
     </Compile>
     <Compile Include="Models\ContactUser.cs" />
     <Compile Include="Models\Person.cs" />
+    <Compile Include="Models\WorkersTime.cs" />
     <Compile Include="MyServer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

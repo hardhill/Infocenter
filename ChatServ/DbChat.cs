@@ -37,18 +37,94 @@ namespace ChatServ
             return n > 0;
         }
 
-        internal async Task CheckOutWorker(string winlogin)
+        internal async Task CheckOutWorker(Client cli)
         {
             var builder = Builders<Tracking>.Filter;
-            var filter = builder.Eq("Winlogin", winlogin)&builder.Eq("DateOut",0)&builder.Lt("DateIn",DateTime.Now.Ticks);
+            var filter = builder.Eq("Winlogin", cli.UserName)&builder.Eq("DateOut",0)&builder.Eq("SessionId",cli.IdSession);
             var update = Builders<Tracking>.Update.Set("DateOut", DateTime.Now.Ticks);
             var result = await coll_tracking.UpdateOneAsync(filter, update);
         }
 
-        internal async Task CheckInWorker(string userName)
+        internal async Task CheckInWorker(Client cli)
         {
-            Tracking tracking = new Tracking() { Winlogin = userName,DateIn = DateTime.Now.Ticks, DateOut=0 };
+            Tracking tracking = new Tracking() { SessionId = cli.IdSession,  Winlogin = cli.UserName ,DateIn = DateTime.Now.Ticks, DateOut=0 };
             await coll_tracking.InsertOneAsync(tracking);
+        }
+
+        internal List<WorkersTime> ActiveWorkers(List<Client> clients)
+        {
+            List<WorkersTime> lstWorks = new List<WorkersTime>();
+            foreach(var cli in clients)
+            {
+                WorkersTime wrkt = new WorkersTime();
+                wrkt.Winlogin = cli.UserName;
+                wrkt.Fa = GetFabyLogin(cli.UserName);
+                wrkt.Im = GetImbyLogin(cli.UserName);
+                wrkt.Ot = GetOtbyLogin(cli.UserName);
+                wrkt.Workbegin = GetWorkBeginbySession(cli.IdSession);
+                wrkt.WorkEnd = GetWorkEndbySession(cli.IdSession);
+                lstWorks.Add(wrkt);
+            }
+            return lstWorks;
+        }
+
+        private long GetWorkEndbySession(string idSession)
+        {
+            var result = coll_tracking.Find(x => x.SessionId == idSession).ToList();
+            if (result != null & result.Count > 0)
+            {
+                return result[0].DateOut;
+            }
+            return 0;
+        }
+
+        private long GetWorkBeginbySession(string idSession)
+        {
+            var result = coll_tracking.Find(x => x.SessionId == idSession).ToList();
+            if (result != null & result.Count > 0)
+            {
+                return result[0].DateIn;
+            }
+            return 0;
+        }
+
+        private string GetOtbyLogin(string userName)
+        {
+            var result = coll_people.Find(x => x.Winlogin.ToLower() == userName.ToLower()).ToList();
+            if (result != null)
+            {
+                if (result.Count > 0)
+                {
+                    return result[0].Ot;
+                }
+            }
+            return "";
+        }
+
+        private string GetImbyLogin(string userName)
+        {
+            var result = coll_people.Find(x => x.Winlogin.ToLower() == userName.ToLower()).ToList();
+            if (result != null)
+            {
+                if (result.Count > 0)
+                {
+                    return result[0].Im;
+                }
+            }
+            return "";
+        }
+
+        private string GetFabyLogin(string userName)
+        {
+          var result = coll_people.Find(x => x.Winlogin.ToLower() == userName.ToLower()).ToList();
+            if (result != null)
+            {
+                if (result.Count > 0)
+                {
+                    return result[0].Fa;
+                }
+            }
+            return "";   
         }
     }
 }

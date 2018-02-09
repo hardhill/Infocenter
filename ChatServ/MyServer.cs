@@ -56,16 +56,7 @@ namespace ChatServ
            OnSessionClose?.Invoke(session, value);
         }
 
-        private void CheckOutWorker(string sessid)
-        {
-            DbChat db = new DbChat("MongoDb");
-            Client cli = Clients.Find(x => x.IdSession == sessid);
-            if (cli != null)
-            {
-                db.CheckOutWorker(cli.UserName).GetAwaiter().GetResult();
-            }
-            
-        }
+        
 
         private void AppServer_NewDataReceived(WebSocketSession session, byte[] value)
         {
@@ -80,15 +71,7 @@ namespace ChatServ
             OnNewSessionConnected?.Invoke(session);
         }
 
-        private void CheckInWorker(string sessionID)
-        {
-            DbChat db = new DbChat("MongoDb");
-            Client cli = Clients.Find(x => x.IdSession == sessionID);
-            if (cli != null)
-            {
-                db.CheckInWorker(cli.UserName).GetAwaiter().GetResult();
-            }
-        }
+       
 
         private void SendId(WebSocketSession session)
         {
@@ -105,11 +88,11 @@ namespace ChatServ
 
         private void AppServer_NewMessageReceived(WebSocketSession session, string value)
         {
-            ControllerCommandIn(value);
+            ControllerCommandIn(session,value);
             OnNewMessageRecieved?.Invoke(session, value);
         }
 
-        private string ControllerCommandIn(string commandvalue)
+        private string ControllerCommandIn(WebSocketSession session,string commandvalue)
         {
             string returnjson = "";
             Comm comm = JsonConvert.DeserializeObject<Comm>(commandvalue);
@@ -128,7 +111,7 @@ namespace ChatServ
                         List<ContactUser> contacts = new List<ContactUser>();
                         Clients.Add(new Client() { IdSession = cli.IdSession, UserName = cli.UserName });
                         //зачекинить пользователя в БД
-                        CheckInWorker(cli.IdSession);
+                        CheckInWorker(cli);
                         //заполнить список всех контактов
                         FillContacts(contacts);
                         //отправить инфу для клиента (всех активных и неактивных пользователей сети)
@@ -136,18 +119,47 @@ namespace ChatServ
                         returnjson = JsonConvert.SerializeObject(comm_res);
                         appServer.Broadcast(Sessions, returnjson, null);
                     }
-                   
                     break;
-                case "CONNECT":
+                case "WORKERS":
                     Client cli_connected = new Client();
                     cli_connected = JsonConvert.DeserializeObject<Client>(comm.Body.ToString());
-
+                    if(Clients != null)
+                    {
+                        List<WorkersTime> wrks = new List<WorkersTime>();
+                        wrks = ActiveWorkers(Clients);
+                        //отправить инфу для клиента (всех активных и неактивных пользователей сети)
+                        Comm comm_res = new Comm() { CommName = "WORKERS", Body = wrks };
+                        returnjson = JsonConvert.SerializeObject(comm_res);
+                        session.Send(returnjson);
+                    }
                     break;
                 default:
                     
                     break;
             }
             return returnjson;
+        }
+        //---------------------------------------- With DB Mongo -------------------------------------------
+        private void CheckInWorker(Client cli)
+        {
+            DbChat db = new DbChat("MongoDb");
+            db.CheckInWorker(cli).GetAwaiter().GetResult();
+        }
+
+        private void CheckOutWorker(string sessid)
+        {
+            DbChat db = new DbChat("MongoDb");
+            Client cli = Clients.Find(x => x.IdSession == sessid);
+            if (cli != null)
+            {
+                db.CheckOutWorker(cli).GetAwaiter().GetResult();
+            }
+
+        }
+        private List<WorkersTime> ActiveWorkers(List<Client> clients)
+        {
+            DbChat db = new DbChat("MongoDb");
+            return db.ActiveWorkers(clients);
         }
 
         private bool CheckUserName(string userName)
