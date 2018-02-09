@@ -1,4 +1,5 @@
 ﻿using MongoDB.Bson;
+using System;
 
 namespace ChatServ.Models
 {
@@ -7,7 +8,7 @@ namespace ChatServ.Models
         public ObjectId _id { get; set; }
         public string SessionId { get; set; }
         public string Winlogin { get; set; }
-        public long DateIn { get; set; }
-        public long DateOut { get; set; }
+        public DateTime DateIn { get; set; }
+        public DateTime DateOut { get; set; }
     }
 }

@@ -11,6 +11,7 @@ using WebSocketSharp;
 using Newtonsoft.Json;
 using ic2.Models;
 using Microsoft.Win32;
+using System.Configuration;
 
 namespace ic2
 {
@@ -22,7 +23,8 @@ namespace ic2
         {
             SystemEvents.SessionSwitch += SystemEvents_SessionSwitch;
             InitializeComponent();
-            myClient = new MyClient("ws://127.0.0.1:3000", "");
+            string server = ConfigurationManager.ConnectionStrings["Server"].ConnectionString;
+            myClient = new MyClient(server, "");
             //myClient = new MyClient("http://127.0.0.1:3001", "");
             myClient.OnErrorClient += MyClient_OnErrorClient;
             myClient.OnMessageRecievedClient += MyClient_OnMessageRecievedClient;

@@ -12,7 +12,7 @@ namespace ChatServ.Models
         public string Fa { get; set; }
         public string Im { get; set; }
         public string Ot { get; set; }
-        public long Workbegin { get; set; }
-        public long WorkEnd { get; set; }
+        public DateTime WorkBegin { get; set; }
+        public DateTime? WorkEnd { get; set; }
     }
 }

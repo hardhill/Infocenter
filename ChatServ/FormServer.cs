@@ -30,9 +30,11 @@ namespace ChatServ
 
         private void frmMain_Load(object sender, EventArgs e)
         {
+            string port = ConfigurationManager.ConnectionStrings["Port"].ConnectionString;
+            string host = ConfigurationManager.ConnectionStrings["Host"].ConnectionString;
             Memo1.Clear();
             dbChat = new DbChat("MongoDb");
-            myServer = new MyServer("127.0.0.1", 3000);
+            myServer = new MyServer(host, Convert.ToInt32(port));
             myServer.OnErrorSetupInit += MyServer_OnErrorSetupInit;
             myServer.OnStartServer += MyServer_OnStartServer;
             myServer.OnErrorStartServer += MyServer_OnErrorStartServer;
@@ -45,13 +47,14 @@ namespace ChatServ
         //новый клиент подсоединился (новая сессия)
         private void MyServer_OnNewSessionConnected(WebSocketSession session)
         {
-            
+            // Memo1.AppendText("Connect:" + session.SessionID+"\r\n");
+            Console.WriteLine(session.SessionID);
         }
 
         
         private void MyServer_OnStopServer(DateTime dt)
         {
-            Memo1.AppendText(dt.ToString("yyyy-MM-dd mm:ss.fff\t") + "Server stoped\r\n");
+            Memo1.AppendText(dt.ToString("yyyy-MM-dd HH:mm:ss.fff\t") + "Server stoped\r\n");
         }
 
         private void MyServer_OnErrorStartServer(string error)
@@ -61,7 +64,7 @@ namespace ChatServ
 
         private void MyServer_OnStartServer(DateTime dt)
         {
-            Memo1.AppendText(dt.ToString("yyyy-MM-dd mm:ss.fff") + "\tserver started!\r\n");
+            Memo1.AppendText(dt.ToString("yyyy-MM-dd HH:mm:ss.fff") + "\tserver started!\r\n");
         }
 
         private void MyServer_OnErrorSetupInit(string error)

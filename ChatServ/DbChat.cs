@@ -33,21 +33,21 @@ namespace ChatServ
 
         internal bool ContainUser(string userName)
         {
-            long n = coll_people.Count(x => x.Winlogin == userName);
+            long n = coll_people.Count(x => x.Winlogin.ToLower() == userName.ToLower());
             return n > 0;
         }
 
         internal async Task CheckOutWorker(Client cli)
         {
             var builder = Builders<Tracking>.Filter;
-            var filter = builder.Eq("Winlogin", cli.UserName)&builder.Eq("DateOut",0)&builder.Eq("SessionId",cli.IdSession);
-            var update = Builders<Tracking>.Update.Set("DateOut", DateTime.Now.Ticks);
+            var filter = builder.Eq("Winlogin", cli.UserName)&builder.Eq("DateOut",DateTime.MinValue)&builder.Eq("SessionId",cli.IdSession);
+            var update = Builders<Tracking>.Update.Set("DateOut", DateTime.Now);
             var result = await coll_tracking.UpdateOneAsync(filter, update);
         }
 
         internal async Task CheckInWorker(Client cli)
         {
-            Tracking tracking = new Tracking() { SessionId = cli.IdSession,  Winlogin = cli.UserName ,DateIn = DateTime.Now.Ticks, DateOut=0 };
+            Tracking tracking = new Tracking() { SessionId = cli.IdSession,  Winlogin = cli.UserName ,DateIn = DateTime.Now, DateOut=DateTime.MinValue };
             await coll_tracking.InsertOneAsync(tracking);
         }
 
@@ -61,31 +61,32 @@ namespace ChatServ
                 wrkt.Fa = GetFabyLogin(cli.UserName);
                 wrkt.Im = GetImbyLogin(cli.UserName);
                 wrkt.Ot = GetOtbyLogin(cli.UserName);
-                wrkt.Workbegin = GetWorkBeginbySession(cli.IdSession);
-                wrkt.WorkEnd = GetWorkEndbySession(cli.IdSession);
+                wrkt.WorkBegin = GetWorkBeginbySession(cli.IdSession);
+                var verify = GetWorkEndbySession(cli.IdSession);
+                if (verify > DateTime.MinValue) wrkt.WorkEnd = verify;
                 lstWorks.Add(wrkt);
             }
             return lstWorks;
         }
 
-        private long GetWorkEndbySession(string idSession)
+        private DateTime GetWorkEndbySession(string idSession)
         {
             var result = coll_tracking.Find(x => x.SessionId == idSession).ToList();
             if (result != null & result.Count > 0)
             {
-                return result[0].DateOut;
+                return (result[0].DateOut);
             }
-            return 0;
+            return DateTime.MinValue;
         }
 
-        private long GetWorkBeginbySession(string idSession)
+        private DateTime GetWorkBeginbySession(string idSession)
         {
             var result = coll_tracking.Find(x => x.SessionId == idSession).ToList();
             if (result != null & result.Count > 0)
             {
                 return result[0].DateIn;
             }
-            return 0;
+            return DateTime.MinValue;
         }
 
         private string GetOtbyLogin(string userName)
