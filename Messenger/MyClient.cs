@@ -1,5 +1,4 @@
-﻿using Messendger.Models;
-using Messendger.Models;
+﻿using Messenger.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -10,7 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using WebSocket4Net;
 
-namespace Messendger
+namespace Messenger
 {
     class MyClient
     {
@@ -20,12 +19,14 @@ namespace Messendger
         public delegate void OpenedClient(object sender, EventArgs e);
         public delegate void MessageRecievedClient(object sender, MessageReceivedEventArgs e);
         public delegate void ChangeContactList(List<ContactUser> contacts);
+        public delegate void ChangeDialogList(List<Dialoge> dialoges);
         public event CloseSocket OnCloseSocket;
         public event DataRecieved OnDataRecieved;
         public event ErrorClient OnErrorClient;
         public event OpenedClient OnOpenedClient;
         public event MessageRecievedClient OnMessageRecievedClient;
         public event ChangeContactList OnChangeContactList;
+        public event ChangeDialogList OnChangeDialogList;
 
         private string url;
         private string protocol;
@@ -37,6 +38,7 @@ namespace Messendger
         private Timer timer1;
         internal bool Active;
         List<ContactUser> contacts = new List<ContactUser>();
+        List<Dialoge> dialoge = new List<Dialoge>();
 
         public string UserName { get { return _username; }}
 
@@ -56,7 +58,6 @@ namespace Messendger
             webSocket.Error += new EventHandler<SuperSocket.ClientEngine.ErrorEventArgs>(WebSocket_Error);
             webSocket.Opened += WebSocket_Opened;
             webSocket.MessageReceived += WebSocket_MessageReceived;
-            
         }
 
         private void TickTimer1(object state)
@@ -90,6 +91,19 @@ namespace Messendger
                 //timer1.Change(0, Timeout.Infinite);
             }
             OnOpenedClient?.Invoke(sender,e);
+        }
+
+        internal void SendMessage(string Address,string text)
+        {
+            Comm comm_req = new Comm();
+            comm_req.CommName = "MSG";
+            MessageSend msg = new MessageSend();
+            msg.Adress = Address;
+            msg.Sender = UserName;
+            msg.Message = text;
+            comm_req.Body = msg;
+            string json = JsonConvert.SerializeObject(comm_req);
+            webSocket.Send(json);
         }
 
         private void WebSocket_Error(object sender, SuperSocket.ClientEngine.ErrorEventArgs e)
@@ -168,6 +182,14 @@ namespace Messendger
                     //инициировать событие
                     OnChangeContactList(contacts);
                     break;
+                case "MSG":
+                    MessageSend msg = JsonConvert.DeserializeObject<MessageSend>(comm.Body.ToString());
+                    if(msg.Adress == UserName)
+                    {
+                        dialoge.Add(new Dialoge() {Author=msg.Sender,ComeIn=true,MessageText=msg.Message,DtMsg=DateTime.Now });
+                        OnChangeDialogList(dialoge);
+                    }
+                    break;
                 default:
                     StopClient();
                     break;
@@ -180,6 +202,13 @@ namespace Messendger
         {
             public string CommName { get; set; }
             public object Body { get; set; }
+        }
+
+        private class MessageSend
+        {
+            public string Adress { get; set; }
+            public string Sender { get; set; }
+            public string Message { get; set; }
         }
 
         internal void Free()

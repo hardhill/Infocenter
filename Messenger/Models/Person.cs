@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Messendger.Models
+namespace Messenger.Models
 {
     public class Person
     {

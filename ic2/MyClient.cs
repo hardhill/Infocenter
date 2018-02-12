@@ -33,7 +33,7 @@ namespace ic2
 
         private WebSocket webSocket;
         private string _username;
-        private Timer timer1;
+       // private Timer timer1;
         internal bool Active;
         List<ContactUser> contacts = new List<ContactUser>();
 

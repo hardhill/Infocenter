@@ -101,6 +101,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\Dialoge.cs" />
     <Compile Include="FormClient.cs">
       <SubType>Form</SubType>
     </Compile>

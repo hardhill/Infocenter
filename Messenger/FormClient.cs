@@ -1,4 +1,4 @@
-﻿using Messendger.Models;
+﻿using Messenger.Models;
 using Microsoft.Win32;
 using SuperSocket.ClientEngine;
 using System;
@@ -13,11 +13,14 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using WebSocket4Net;
 
-namespace Messendger
+namespace Messenger
 {
     public partial class frmClient : Form
     {
         private MyClient myClient;
+
+        ContactUser contactUser;
+
         public frmClient()
         {
            
@@ -25,9 +28,11 @@ namespace Messendger
             InitializeComponent();
             string server = ConfigurationManager.ConnectionStrings["Server"].ConnectionString;
             myClient = new MyClient(server, "");
+            contactUser = new ContactUser();
             myClient.OnErrorClient += MyClient_OnErrorClient;
             myClient.OnMessageRecievedClient += MyClient_OnMessageRecievedClient;
             myClient.OnChangeContactList += MyClient_OnChangeContactList;
+            myClient.OnChangeDialogList += MyClient_OnChangeDialogList;
 
             if (myClient.SystemLogined())
             {
@@ -38,6 +43,18 @@ namespace Messendger
                 myClient.Free();
         }
 
+        private void MyClient_OnChangeDialogList(List<Dialoge> dialoges)
+        {
+            if (dialoges.Count > 0)
+            {
+                this.lstDialog.BeginInvoke((MethodInvoker)(delegate
+                {
+                    Dialoge dlg = dialoges[dialoges.Count - 1];
+                    lstDialog.Items.Add(dlg);
+                }));
+            }
+        }
+
         private void MyClient_OnChangeContactList(List<ContactUser> contacts)
         {
             this.lstContacts.BeginInvoke((MethodInvoker)(delegate {
@@ -46,7 +63,7 @@ namespace Messendger
                 lstContacts.Items.Clear();
                 foreach (var cont in contacts)
                 {
-                    lstContacts.Items.Add(String.Format("{0} {1} {2}", cont.Fa, cont.Im, cont.Ot));
+                    lstContacts.Items.Add(cont);
                 }
 
             }));
@@ -61,7 +78,7 @@ namespace Messendger
 
         private void MyClient_OnErrorClient(object sender, ErrorEventArgs e)
         {
-            throw new NotImplementedException();
+            //
         }
 
         private void SystemEvents_SessionSwitch(object sender, SessionSwitchEventArgs e)
@@ -80,6 +97,24 @@ namespace Messendger
                     break;
                 default:
                     break;
+            }
+        }
+
+        private void lstContacts_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            //выбор клиента в списке
+           var idx = lstContacts.SelectedIndex;
+           lblContact.Text = lstContacts.Items[idx].ToString();
+           contactUser = lstContacts.Items[idx] as ContactUser;
+        }
+
+        private void bSend_Click(object sender, EventArgs e)
+        {
+            //отправить сообщение
+            if (contactUser != null)
+            {
+                myClient.SendMessage(contactUser.Winlogin,  txtMessage.Text);
+                txtMessage.Text = "";
             }
         }
     }

@@ -133,13 +133,47 @@ namespace ChatServ
                         session.Send(returnjson);
                     }
                     break;
+                case "MSG":
+                    MessageSend msg = new MessageSend();
+                    msg = JsonConvert.DeserializeObject<MessageSend>(comm.Body.ToString());
+                    if (msg != null)
+                    {
+                        AddToHistoryMessages(msg);
+                        //отправка оссобщения адресату
+                        returnjson = SendMessageToUser(msg);
+                        
+                    }
+                    break;
                 default:
                     
                     break;
             }
             return returnjson;
         }
+
+        private string SendMessageToUser(MessageSend msg)
+        {
+            string usr = msg.Adress;
+            Client client = Clients.FindLast(x => x.UserName.ToLower() == usr.ToLower());
+            Comm com_resp = new Comm();
+            com_resp.CommName = "MSG";
+            com_resp.Body = new MessageSend() { Adress = msg.Adress, Sender = msg.Sender, Message = msg.Message };
+            string json = JsonConvert.SerializeObject(com_resp);
+            appServer.GetSessionByID(client.IdSession).Send(json);
+            return json;
+        }
+
+
+
         //---------------------------------------- With DB Mongo -------------------------------------------
+
+        private void AddToHistoryMessages(MessageSend msg)
+        {
+            //добавить в историю сообщений
+            DbChat db = new DbChat("MongoDb");
+            
+        }
+
         private void CheckInWorker(Client cli)
         {
             DbChat db = new DbChat("MongoDb");
@@ -251,6 +285,13 @@ namespace ChatServ
         {
             public string CommName { get; set; }
             public Object Body { get; set; }
+        }
+
+        private class MessageSend
+        {
+            public string Adress { get; set; }
+            public string Sender { get; set; }
+            public string Message { get; set; }
         }
     }
 }
