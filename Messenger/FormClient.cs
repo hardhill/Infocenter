@@ -27,6 +27,7 @@ namespace Messenger
             SystemEvents.SessionSwitch += SystemEvents_SessionSwitch;
             InitializeComponent();
             string server = ConfigurationManager.ConnectionStrings["Server"].ConnectionString;
+            
             myClient = new MyClient(server, "");
             contactUser = new ContactUser();
             myClient.OnErrorClient += MyClient_OnErrorClient;
@@ -34,13 +35,9 @@ namespace Messenger
             myClient.OnChangeContactList += MyClient_OnChangeContactList;
             myClient.OnChangeDialogList += MyClient_OnChangeDialogList;
 
-            if (myClient.SystemLogined())
-            {
-
-                myClient.StartClient();
-            }
-            else
-                myClient.Free();
+            
+            //myClient.StartClient();
+            
         }
 
         private void MyClient_OnChangeDialogList(List<Dialoge> dialoges)
@@ -111,11 +108,29 @@ namespace Messenger
         private void bSend_Click(object sender, EventArgs e)
         {
             //отправить сообщение
-            if (contactUser != null)
+            if (contactUser.Winlogin != null&&txtMessage.Text!="")
             {
                 myClient.SendMessage(contactUser.Winlogin,  txtMessage.Text);
                 txtMessage.Text = "";
             }
+        }
+
+        private void bGetContacts_Click(object sender, EventArgs e)
+        {
+            //запросить контакты принудительно
+            myClient.GetClients();
+        }
+
+        private void txtFindCont_TextChanged(object sender, EventArgs e)
+        {
+            //поиск в контактах
+        }
+
+        //временно
+        private void cb_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            myClient.UserName = cb.Text;
+            myClient.StartClient();
         }
     }
 }

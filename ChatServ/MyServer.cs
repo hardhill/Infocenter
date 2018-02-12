@@ -29,7 +29,7 @@ namespace ChatServ
 
         private List<WebSocketSession> Sessions = new List<WebSocketSession>();
         public List<Client> Clients = new List<Client>();
-
+        private List<ContactUser> contacts;
         private WebSocketServer appServer;
         private string _ipadress;
         private int _port;
@@ -41,16 +41,20 @@ namespace ChatServ
             _ipadress = ipadress;
             _port = port;
             appServer = new WebSocketServer();
-                        
+            contacts = new List<ContactUser>();
             appServer.NewMessageReceived += new SessionHandler<WebSocketSession, string>(AppServer_NewMessageReceived);
             appServer.NewSessionConnected += new SessionHandler<WebSocketSession>(AppServer_NewSessionConnected);
             appServer.NewDataReceived += new SessionHandler<WebSocketSession, byte[]>(AppServer_NewDataReceived);
             appServer.SessionClosed += new SessionHandler<WebSocketSession, CloseReason>(AppServer_SessionClose);
+
         }
 
         private void AppServer_SessionClose(WebSocketSession session, CloseReason value)
         {
            Sessions.Remove(session);
+           string id = session.SessionID;
+           Client cli = Clients.FindLast(x => x.IdSession == id);
+           Clients.Remove(cli);
            var sessid = session.SessionID;
            CheckOutWorker(sessid);
            OnSessionClose?.Invoke(session, value);
@@ -99,6 +103,7 @@ namespace ChatServ
             string commandName = comm.CommName;
             
 
+
             switch (commandName)
             {
                 case "NEWUSER":
@@ -108,7 +113,7 @@ namespace ChatServ
                     //проверка на пользователя в БД (есть ли такой пользователь)
                     if (CheckUserName(cli.UserName))
                     {
-                        List<ContactUser> contacts = new List<ContactUser>();
+                        
                         Clients.Add(new Client() { IdSession = cli.IdSession, UserName = cli.UserName });
                         //зачекинить пользователя в БД
                         CheckInWorker(cli);
@@ -143,6 +148,15 @@ namespace ChatServ
                         returnjson = SendMessageToUser(msg);
                         
                     }
+                    break;
+                case "GETCL":
+                    Client client = new Client();
+                    client = JsonConvert.DeserializeObject<Client>(comm.Body.ToString());
+                    FillContacts(contacts);
+                    //отправить инфу для клиента (всех активных и неактивных пользователей сети)
+                    Comm comm_resp = new Comm() { CommName = "GETCL", Body = contacts };
+                    returnjson = JsonConvert.SerializeObject(comm_resp);
+                    session.Send(returnjson);
                     break;
                 default:
                     

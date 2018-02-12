@@ -40,7 +40,7 @@ namespace Messenger
         List<ContactUser> contacts = new List<ContactUser>();
         List<Dialoge> dialoge = new List<Dialoge>();
 
-        public string UserName { get { return _username; }}
+        public string UserName { get { return _username; } set { _username = value; } }
 
         public MyClient(string uri,string protocol)
         {
@@ -60,25 +60,15 @@ namespace Messenger
             webSocket.MessageReceived += WebSocket_MessageReceived;
         }
 
-        private void TickTimer1(object state)
-        {
-            Console.WriteLine(this.webSocket.State);
-            if(webSocket.State == WebSocketState.Open)
-            {
-
-            }
-            if(webSocket.State == WebSocketState.Closed)
-            {
-                webSocket.Open();
-            }
-           
-        }
-
+       
         private void WebSocket_MessageReceived(object sender, MessageReceivedEventArgs e)
         {
             string value = e.Message;
             value = ControllerCommandIn(value);
-            webSocket.Send(value);
+            if (value != "{}")
+            {
+                webSocket.Send(value);
+            }
             OnMessageRecievedClient?.Invoke(sender,e);
         }
         //соединение установлено
@@ -93,6 +83,7 @@ namespace Messenger
             OnOpenedClient?.Invoke(sender,e);
         }
 
+        // делаем команду отправкуи сообщения
         internal void SendMessage(string Address,string text)
         {
             Comm comm_req = new Comm();
@@ -102,6 +93,15 @@ namespace Messenger
             msg.Sender = UserName;
             msg.Message = text;
             comm_req.Body = msg;
+            string json = JsonConvert.SerializeObject(comm_req);
+            webSocket.Send(json);
+        }
+
+        internal void GetClients()
+        {
+            Comm comm_req = new Comm();
+            comm_req.CommName = "GETCL";
+            comm_req.Body = new Client() { UserName = this.UserName };
             string json = JsonConvert.SerializeObject(comm_req);
             webSocket.Send(json);
         }
@@ -139,8 +139,12 @@ namespace Messenger
 
         public void StartClient()
         {
-
-            webSocket.Open();
+            webSocket.Close();
+            if (_username != "")
+            {
+                //TODO  не успевает закрыться
+                webSocket.Open();
+            }
         }
 
         public void StopClient()
@@ -148,15 +152,6 @@ namespace Messenger
             webSocket.Close();
         }
 
-
-        internal bool SystemLogined()
-        {
-            //логин пользователя
-            var s = WindowsIdentity.GetCurrent().Name;
-            var n = s.LastIndexOf('\\');
-            _username = s.Substring(n+1);
-            return (_username != null);
-        }
 
         //процессор приема сообщений
         private string ControllerCommandIn(string value)
@@ -187,8 +182,13 @@ namespace Messenger
                     if(msg.Adress == UserName)
                     {
                         dialoge.Add(new Dialoge() {Author=msg.Sender,ComeIn=true,MessageText=msg.Message,DtMsg=DateTime.Now });
+                        //событие на изменение списка диалога
                         OnChangeDialogList(dialoge);
                     }
+                    break;
+                case "GETCL":
+                    contacts = JsonConvert.DeserializeObject<List<ContactUser>>(comm.Body.ToString());
+                    OnChangeContactList(contacts);
                     break;
                 default:
                     StopClient();
