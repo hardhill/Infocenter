@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{4D5DCD52-4D02-4989-B207-2BB553CAA225}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>Messendger</RootNamespace>
-    <AssemblyName>Messendger</AssemblyName>
+    <RootNamespace>Messenger</RootNamespace>
+    <AssemblyName>Messenger</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

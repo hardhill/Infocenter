@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ic2", "ic2\ic2.csproj", "{3
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatServ", "ChatServ\ChatServ.csproj", "{1B9F5B1F-62C7-4C4C-A20D-B620704F2BDF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messendger", "Messendger\Messendger.csproj", "{4D5DCD52-4D02-4989-B207-2BB553CAA225}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messenger", "Messenger\Messenger.csproj", "{4D5DCD52-4D02-4989-B207-2BB553CAA225}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

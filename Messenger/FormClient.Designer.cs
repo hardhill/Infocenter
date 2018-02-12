@@ -152,7 +152,7 @@
         private System.Windows.Forms.Panel pnlFindCont;
         private System.Windows.Forms.TextBox txtFindCont;
         private System.Windows.Forms.Panel pnlMessages;
-        private System.Windows.Forms.ListBox lstContacts;
+        public System.Windows.Forms.ListBox lstContacts;
         private System.Windows.Forms.ListBox lstDialog;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.TextBox txtMessage;

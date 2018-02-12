@@ -25,7 +25,6 @@ namespace Messendger
             InitializeComponent();
             string server = ConfigurationManager.ConnectionStrings["Server"].ConnectionString;
             myClient = new MyClient(server, "");
-            //myClient = new MyClient("http://127.0.0.1:3000", "");
             myClient.OnErrorClient += MyClient_OnErrorClient;
             myClient.OnMessageRecievedClient += MyClient_OnMessageRecievedClient;
             myClient.OnChangeContactList += MyClient_OnChangeContactList;
@@ -41,16 +40,23 @@ namespace Messendger
 
         private void MyClient_OnChangeContactList(List<ContactUser> contacts)
         {
-            lstContacts.Items.Clear();
-            foreach (var cont in contacts)
-            {
-                lstContacts.Items.Add(String.Format("{0} {1} {2}", cont.Fa, cont.Im, cont.Ot));
-            }
+            this.lstContacts.BeginInvoke((MethodInvoker)(delegate {
+
+
+                lstContacts.Items.Clear();
+                foreach (var cont in contacts)
+                {
+                    lstContacts.Items.Add(String.Format("{0} {1} {2}", cont.Fa, cont.Im, cont.Ot));
+                }
+
+            }));
+            
+            
         }
 
         private void MyClient_OnMessageRecievedClient(object sender, MessageReceivedEventArgs e)
         {
-            throw new NotImplementedException();
+           // 
         }
 
         private void MyClient_OnErrorClient(object sender, ErrorEventArgs e)

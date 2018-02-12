@@ -25,7 +25,6 @@ namespace ic2
             InitializeComponent();
             string server = ConfigurationManager.ConnectionStrings["Server"].ConnectionString;
             myClient = new MyClient(server, "");
-            //myClient = new MyClient("http://127.0.0.1:3001", "");
             myClient.OnErrorClient += MyClient_OnErrorClient;
             myClient.OnMessageRecievedClient += MyClient_OnMessageRecievedClient;
             myClient.OnChangeContactList += MyClient_OnChangeContactList;

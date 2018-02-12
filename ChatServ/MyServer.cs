@@ -181,10 +181,10 @@ namespace ChatServ
             {
                 string winlogin = cli.UserName;
                 string id = cli.IdSession;
-                string fa = allPerson.Find(x => x.Winlogin == winlogin).Fa;
-                string im = allPerson.Find(x => x.Winlogin == winlogin).Im;
-                string ot = allPerson.Find(x => x.Winlogin == winlogin).Ot;
-                long dt = allPerson.Find(x => x.Winlogin == winlogin).Bday;
+                string fa = allPerson.Find(x => x.Winlogin.ToLower() == winlogin.ToLower()).Fa;
+                string im = allPerson.Find(x => x.Winlogin.ToLower() == winlogin.ToLower()).Im;
+                string ot = allPerson.Find(x => x.Winlogin.ToLower() == winlogin.ToLower()).Ot;
+                long dt = allPerson.Find(x => x.Winlogin.ToLower() == winlogin.ToLower()).Bday;
                 contacts.Add(new ContactUser() { SessionId = id, Winlogin = winlogin, Fa = fa, Im = im, Ot = ot, Bday = new DateTime(dt) });
             }
         }
