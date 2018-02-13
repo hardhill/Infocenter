@@ -51,16 +51,25 @@ namespace ChatServ
 
         private void AppServer_SessionClose(WebSocketSession session, CloseReason value)
         {
+            //удалить сессия
            Sessions.Remove(session);
-           string id = session.SessionID;
-           Client cli = Clients.FindLast(x => x.IdSession == id);
+           Client cli = Clients.FindLast(x => x.IdSession == session.SessionID);
+            //удалить из списка клиентов
            Clients.Remove(cli);
-           var sessid = session.SessionID;
-           CheckOutWorker(sessid);
+           CheckOutWorker(session.SessionID);
+            //послать всем новый список
+            SendAllContacts();
            OnSessionClose?.Invoke(session, value);
         }
 
-        
+        private void SendAllContacts()
+        {
+            FillContacts(contacts);
+            //отправить инфу для клиента (всех активных и неактивных пользователей сети)
+            Comm comm_resp = new Comm() { CommName = "GETCL", Body = contacts };
+            string json = JsonConvert.SerializeObject(comm_resp);
+            appServer.Broadcast(Sessions, json, null);
+        }
 
         private void AppServer_NewDataReceived(WebSocketSession session, byte[] value)
         {
@@ -88,6 +97,21 @@ namespace ChatServ
             comm.Body = cl;
             value = JsonConvert.SerializeObject(comm, Formatting.None);
             session.Send(value);
+        }
+
+        private string SendMessageToAdress(MessageSend msg)
+        {
+            string usr = msg.Adress;
+            string author = msg.Sender;
+            Client client_adress = Clients.FindLast(x => x.UserName.ToLower() == usr.ToLower());
+            Client client_sender = Clients.FindLast(x => x.UserName.ToLower() == author.ToLower());
+            Comm com_resp = new Comm();
+            com_resp.CommName = "MSG";
+            com_resp.Body = new MessageSend() { Adress = msg.Adress, Sender = msg.Sender, Message = msg.Message };
+            string json = JsonConvert.SerializeObject(com_resp);
+            appServer.GetSessionByID(client_adress.IdSession).Send(json);
+            appServer.GetSessionByID(client_sender.IdSession).Send(json);
+            return json;
         }
 
         private void AppServer_NewMessageReceived(WebSocketSession session, string value)
@@ -145,8 +169,9 @@ namespace ChatServ
                     {
                         AddToHistoryMessages(msg);
                         //отправка оссобщения адресату
-                        returnjson = SendMessageToUser(msg);
+                        returnjson = SendMessageToAdress(msg);
                         
+
                     }
                     break;
                 case "GETCL":
@@ -165,17 +190,7 @@ namespace ChatServ
             return returnjson;
         }
 
-        private string SendMessageToUser(MessageSend msg)
-        {
-            string usr = msg.Adress;
-            Client client = Clients.FindLast(x => x.UserName.ToLower() == usr.ToLower());
-            Comm com_resp = new Comm();
-            com_resp.CommName = "MSG";
-            com_resp.Body = new MessageSend() { Adress = msg.Adress, Sender = msg.Sender, Message = msg.Message };
-            string json = JsonConvert.SerializeObject(com_resp);
-            appServer.GetSessionByID(client.IdSession).Send(json);
-            return json;
-        }
+       
 
 
 

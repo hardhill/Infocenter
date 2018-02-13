@@ -19,7 +19,7 @@ namespace Messenger
     {
         private MyClient myClient;
 
-        ContactUser contactUser;
+        ContactUser CurrentContactUser;
 
         public frmClient()
         {
@@ -29,15 +29,23 @@ namespace Messenger
             string server = ConfigurationManager.ConnectionStrings["Server"].ConnectionString;
             
             myClient = new MyClient(server, "");
-            contactUser = new ContactUser();
+            CurrentContactUser = new ContactUser();
             myClient.OnErrorClient += MyClient_OnErrorClient;
             myClient.OnMessageRecievedClient += MyClient_OnMessageRecievedClient;
             myClient.OnChangeContactList += MyClient_OnChangeContactList;
             myClient.OnChangeDialogList += MyClient_OnChangeDialogList;
+            myClient.OnOpenedClient += MyClient_OnOpenedClient;
 
             
             //myClient.StartClient();
             
+        }
+
+        private void MyClient_OnOpenedClient(object sender, EventArgs e)
+        {
+            this.BeginInvoke((MethodInvoker)(delegate{
+                this.Text = myClient.Winlogin;
+            }));
         }
 
         private void MyClient_OnChangeDialogList(List<Dialoge> dialoges)
@@ -52,16 +60,18 @@ namespace Messenger
             }
         }
 
+        //изменение списка контактов клиента
         private void MyClient_OnChangeContactList(List<ContactUser> contacts)
         {
             this.lstContacts.BeginInvoke((MethodInvoker)(delegate {
 
-
+                this.Text = String.Format("{0} {1} {2}", myClient.Contactuser.Fa, myClient.Contactuser.Im, myClient.Contactuser.Ot);
                 lstContacts.Items.Clear();
                 foreach (var cont in contacts)
                 {
                     lstContacts.Items.Add(cont);
                 }
+                lstContacts.SelectedIndex = lstContacts.Items.Count>0?0:-1;
 
             }));
             
@@ -102,15 +112,15 @@ namespace Messenger
             //выбор клиента в списке
            var idx = lstContacts.SelectedIndex;
            lblContact.Text = lstContacts.Items[idx].ToString();
-           contactUser = lstContacts.Items[idx] as ContactUser;
+           CurrentContactUser = lstContacts.Items[idx] as ContactUser;
         }
 
         private void bSend_Click(object sender, EventArgs e)
         {
             //отправить сообщение
-            if (contactUser.Winlogin != null&&txtMessage.Text!="")
+            if (CurrentContactUser.Winlogin != null&&txtMessage.Text!="")
             {
-                myClient.SendMessage(contactUser.Winlogin,  txtMessage.Text);
+                myClient.SendMessage(CurrentContactUser.Winlogin,  txtMessage.Text);
                 txtMessage.Text = "";
             }
         }
@@ -129,8 +139,21 @@ namespace Messenger
         //временно
         private void cb_SelectedIndexChanged(object sender, EventArgs e)
         {
-            myClient.UserName = cb.Text;
+            myClient.Winlogin = cb.Text;
             myClient.StartClient();
+        }
+
+        private void frmClient_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            myClient.StopClient();
+        }
+
+        private void txtMessage_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Return)
+            {
+                bSend_Click(sender, e);
+            }
         }
     }
 }

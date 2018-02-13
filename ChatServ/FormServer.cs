@@ -40,15 +40,25 @@ namespace ChatServ
             myServer.OnErrorStartServer += MyServer_OnErrorStartServer;
             myServer.OnStopServer += MyServer_OnStopServer;
             myServer.OnNewSessionConnected += MyServer_OnNewSessionConnected;
+            myServer.OnSessionClose += MyServer_OnSessionClose;
             myServer.Setup();
            
+        }
+
+        private void MyServer_OnSessionClose(WebSocketSession session, SuperSocket.SocketBase.CloseReason value)
+        {
+            Memo1.BeginInvoke((MethodInvoker)(delegate {
+                Memo1.AppendText("Disconnect["+value.ToString()+"]:\t" + session.SessionID + "\r\n");
+            }));
         }
 
         //новый клиент подсоединился (новая сессия)
         private void MyServer_OnNewSessionConnected(WebSocketSession session)
         {
-            // Memo1.AppendText("Connect:" + session.SessionID+"\r\n");
-            Console.WriteLine(session.SessionID);
+            Memo1.BeginInvoke((MethodInvoker)(delegate{
+                Memo1.AppendText("Connect:\t\t\t" + session.SessionID + "\r\n");
+            }));
+            
         }
 
         
@@ -81,5 +91,7 @@ namespace ChatServ
         {
             myServer.Stop();
         }
+
+        
     }
 }

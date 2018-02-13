@@ -35,12 +35,14 @@ namespace Messenger
 
         private WebSocket webSocket;
         private string _username;
+        private ContactUser _contactuser;
         private Timer timer1;
         internal bool Active;
         List<ContactUser> contacts = new List<ContactUser>();
         List<Dialoge> dialoge = new List<Dialoge>();
 
-        public string UserName { get { return _username; } set { _username = value; } }
+        public string Winlogin { get { return _username; } set { _username = value; } }
+        public ContactUser Contactuser { get { return _contactuser; }  }
 
         public MyClient(string uri,string protocol)
         {
@@ -77,9 +79,9 @@ namespace Messenger
             if (webSocket.State == WebSocketState.Open)
             {
                 Active = true;
-                //
-                //timer1.Change(0, Timeout.Infinite);
+                
             }
+
             OnOpenedClient?.Invoke(sender,e);
         }
 
@@ -90,7 +92,7 @@ namespace Messenger
             comm_req.CommName = "MSG";
             MessageSend msg = new MessageSend();
             msg.Adress = Address;
-            msg.Sender = UserName;
+            msg.Sender = Winlogin;
             msg.Message = text;
             comm_req.Body = msg;
             string json = JsonConvert.SerializeObject(comm_req);
@@ -101,7 +103,7 @@ namespace Messenger
         {
             Comm comm_req = new Comm();
             comm_req.CommName = "GETCL";
-            comm_req.Body = new Client() { UserName = this.UserName };
+            comm_req.Body = new Client() { UserName = this.Winlogin };
             string json = JsonConvert.SerializeObject(comm_req);
             webSocket.Send(json);
         }
@@ -168,26 +170,34 @@ namespace Messenger
                     cli = JsonConvert.DeserializeObject<Client>(comm.Body.ToString());
                     SetId(cli.IdSession);//установить идентификатор сессии для клиента
                     //отправить инфу для сервера
-                    Comm comm_resp = new Comm() { CommName = "NEWUSER", Body = new Client() { UserName = this.UserName, IdSession = GetId() } };
+                    Comm comm_resp = new Comm() { CommName = "NEWUSER", Body = new Client() { UserName = this.Winlogin, IdSession = GetId() } };
                     string json = JsonConvert.SerializeObject(comm_resp);
                     returnjson = json;
                     break;
                 case "NEWUSER":
                     contacts = JsonConvert.DeserializeObject<List<ContactUser>>(comm.Body.ToString());
+                    //исключить из списка контактов себя самого
+                    contacts = VerifyContacts(contacts, Winlogin);
                     //инициировать событие
                     OnChangeContactList(contacts);
                     break;
                 case "MSG":
                     MessageSend msg = JsonConvert.DeserializeObject<MessageSend>(comm.Body.ToString());
-                    if(msg.Adress == UserName)
+                    if(msg.Adress == Winlogin)
                     {
                         dialoge.Add(new Dialoge() {Author=msg.Sender,ComeIn=true,MessageText=msg.Message,DtMsg=DateTime.Now });
                         //событие на изменение списка диалога
-                        OnChangeDialogList(dialoge);
+                    }else if (msg.Sender == Winlogin)
+                    {
+                        dialoge.Add(new Dialoge() { Author = msg.Adress, ComeIn = false, MessageText = msg.Message, DtMsg = DateTime.Now });
                     }
+                    
+                    OnChangeDialogList(dialoge);
                     break;
                 case "GETCL":
                     contacts = JsonConvert.DeserializeObject<List<ContactUser>>(comm.Body.ToString());
+                    //исключить из списка контактов себя самого
+                    contacts = VerifyContacts(contacts, Winlogin);
                     OnChangeContactList(contacts);
                     break;
                 default:
@@ -197,6 +207,14 @@ namespace Messenger
             return returnjson;
         }
 
+        private List<ContactUser> VerifyContacts(List<ContactUser> contacts, string winlogin)
+        {
+            List<ContactUser> lstCont = new List<ContactUser>();
+            ContactUser user = contacts.Find(x => x.Winlogin == winlogin);
+            this._contactuser = user;
+            lstCont = contacts.FindAll(x => x.Winlogin != winlogin);
+            return lstCont;
+        }
 
         private class Comm
         {

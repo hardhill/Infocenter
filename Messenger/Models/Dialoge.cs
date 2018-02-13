@@ -11,9 +11,15 @@ namespace Messenger
 
         public override string ToString()
         {
-            TimeSpan tt = DtMsg.TimeOfDay;
-            
-            return String.Format("[{0}]{1} = {2}", Author, MessageText, tt);
+            string tt = DtMsg.ToString("HH:mm:ss");
+            if (ComeIn)
+            {
+                return String.Format("[{0}]{1} = {2}", Author, MessageText, tt);
+            }
+            else
+            {
+                return String.Format("{0} = {1}",MessageText,tt);
+            }
         }
     }
 }

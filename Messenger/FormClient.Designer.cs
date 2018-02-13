@@ -89,7 +89,7 @@
             "Test2"});
             this.cb.Location = new System.Drawing.Point(104, 15);
             this.cb.Name = "cb";
-            this.cb.Size = new System.Drawing.Size(165, 21);
+            this.cb.Size = new System.Drawing.Size(179, 21);
             this.cb.TabIndex = 2;
             this.cb.SelectedIndexChanged += new System.EventHandler(this.cb_SelectedIndexChanged);
             // 
@@ -158,6 +158,7 @@
             this.txtMessage.Name = "txtMessage";
             this.txtMessage.Size = new System.Drawing.Size(271, 20);
             this.txtMessage.TabIndex = 0;
+            this.txtMessage.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtMessage_KeyDown);
             // 
             // panel1
             // 
@@ -187,6 +188,7 @@
             this.Name = "frmClient";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Сообщения";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmClient_FormClosing);
             this.pnlContact.ResumeLayout(false);
             this.pnlFindCont.ResumeLayout(false);
             this.pnlFindCont.PerformLayout();
