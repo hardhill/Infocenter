@@ -108,6 +108,15 @@ namespace Messenger
             webSocket.Send(json);
         }
 
+        internal void GetDialog()
+        {
+            Comm comm_req = new Comm();
+            comm_req.CommName = "GETDLG";
+            //TODO сформировать команду
+            string json = JsonConvert.SerializeObject(comm_req);
+            webSocket.Send(json);
+        }
+
         private void WebSocket_Error(object sender, SuperSocket.ClientEngine.ErrorEventArgs e)
         {
             Active = false;

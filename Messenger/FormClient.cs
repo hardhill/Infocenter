@@ -19,6 +19,7 @@ namespace Messenger
     {
         private MyClient myClient;
 
+        //текущий пользователь сообщателя
         ContactUser CurrentContactUser;
 
         public frmClient()
@@ -113,6 +114,9 @@ namespace Messenger
            var idx = lstContacts.SelectedIndex;
            lblContact.Text = lstContacts.Items[idx].ToString();
            CurrentContactUser = lstContacts.Items[idx] as ContactUser;
+            //переключение на диалог
+            lstDialog.Items.Clear();
+            myClient.GetDialog();
         }
 
         private void bSend_Click(object sender, EventArgs e)
