@@ -14,11 +14,11 @@ namespace Messenger
             string tt = DtMsg.ToString("HH:mm:ss");
             if (ComeIn)
             {
-                return String.Format("[{0}]{1} = {2}", Author, MessageText, tt);
+                return String.Format("[{0}]{1}\t({2})", Author, MessageText, tt);
             }
             else
             {
-                return String.Format("{0} = {1}",MessageText,tt);
+                return String.Format("<<{0}\t({1})",MessageText,tt);
             }
         }
     }

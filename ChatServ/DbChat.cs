@@ -14,6 +14,7 @@ namespace ChatServ
     {
         private IMongoCollection<Person> coll_people;
         private IMongoCollection<Tracking> coll_tracking;
+        private IMongoCollection<OneMessage> coll_message;
         private IMongoDatabase db;
         public DbChat(string connectionString)
         {
@@ -22,6 +23,7 @@ namespace ChatServ
             db = client.GetDatabase("infocenter");
             coll_people = db.GetCollection<Person>("people");
             coll_tracking = db.GetCollection<Tracking>("tracking");
+            coll_message = db.GetCollection<OneMessage>("messages");
         }
                 
         public List<Person> All()
@@ -126,6 +128,11 @@ namespace ChatServ
                 }
             }
             return "";   
+        }
+
+        internal async Task AddMessage(OneMessage msg)
+        {
+            await coll_message.InsertOneAsync(msg);
         }
     }
 }

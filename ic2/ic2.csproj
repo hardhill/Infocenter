@@ -187,7 +187,6 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <None Include="ic2_TemporaryKey.pfx" />
     <None Include="packages.config" />
     <None Include="Properties\DataSources\ic2.Models.Person.datasource" />
     <None Include="Properties\Settings.settings">

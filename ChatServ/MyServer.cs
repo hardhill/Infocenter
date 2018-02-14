@@ -200,6 +200,13 @@ namespace ChatServ
         {
             //добавить в историю сообщений
             DbChat db = new DbChat("MongoDb");
+            OneMessage oneMessage = new OneMessage();
+            oneMessage.Adress = msg.Adress;
+            oneMessage.DateWrite = DateTime.Now;
+            oneMessage.MessageText = msg.Message;
+            oneMessage.Sender = msg.Sender;
+            oneMessage.Readed = false;
+            db.AddMessage(oneMessage).GetAwaiter().GetResult();
             
         }
 

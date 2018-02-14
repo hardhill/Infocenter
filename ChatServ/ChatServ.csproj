@@ -98,6 +98,7 @@
       <DependentUpon>FormServer.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\ContactUser.cs" />
+    <Compile Include="Models\OneMessage.cs" />
     <Compile Include="Models\Person.cs" />
     <Compile Include="Models\WorkersTime.cs" />
     <Compile Include="MyServer.cs" />

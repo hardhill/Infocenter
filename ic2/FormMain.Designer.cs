@@ -65,7 +65,7 @@
             this.web.ScrollBarsEnabled = false;
             this.web.Size = new System.Drawing.Size(584, 461);
             this.web.TabIndex = 0;
-            this.web.Url = new System.Uri("http://localhost", System.UriKind.Absolute);
+            this.web.Url = new System.Uri("http://localhost/watcher.html", System.UriKind.Absolute);
             // 
             // contextMenuStrip2
             // 
