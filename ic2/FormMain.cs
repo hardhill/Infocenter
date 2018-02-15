@@ -21,8 +21,8 @@ namespace ic2
 
 
         //during init of your application bind to this event  
-        
-        public FormMessage formMessage = new FormMessage();
+
+        public FormMessage formMessage;
 
         public IMessageFilter messageFilter { get; private set; }
 
@@ -31,6 +31,7 @@ namespace ic2
             
             InitializeComponent();
             Visible = true;
+            formMessage = new FormMessage();
         }
 
        
@@ -91,6 +92,11 @@ namespace ic2
             }
             if(e.Button == MouseButtons.Left)
             {
+                if (formMessage == null || formMessage.IsDisposed)
+                {
+                    formMessage = new FormMessage();
+                    
+                }
                 formMessage.Show();
             }
         }
@@ -102,7 +108,7 @@ namespace ic2
 
         private void FormMain_FormClosed(object sender, FormClosedEventArgs e)
         {
-            //
+           //
         }
 
         private static void RunOurPeople()

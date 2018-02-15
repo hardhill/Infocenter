@@ -36,7 +36,7 @@ namespace Messenger
         private WebSocket webSocket;
         private string _username;
         private ContactUser _contactuser;
-        private Timer timer1;
+        //private Timer timer1;
         internal bool Active;
         List<ContactUser> contacts = new List<ContactUser>();
         List<Dialoge> dialoge = new List<Dialoge>();
@@ -52,9 +52,11 @@ namespace Messenger
 
             this.Active = false;
             //this.timer1 = new Timer(new TimerCallback(TickTimer1),null,1000,3000);
-            webSocket = new WebSocket(this.url, this.protocol, this.version);
-            webSocket.AutoSendPingInterval = 2000;
-            
+            webSocket = new WebSocket(this.url, this.protocol, this.version)
+            {
+                AutoSendPingInterval = 2000
+            };
+
             webSocket.Closed += WebSocket_Closed;
             webSocket.DataReceived += WebSocket_DataReceived;
             webSocket.Error += new EventHandler<SuperSocket.ClientEngine.ErrorEventArgs>(WebSocket_Error);
@@ -89,12 +91,16 @@ namespace Messenger
         // делаем команду отправкуи сообщения
         internal void SendMessage(string Address,string text)
         {
-            Comm comm_req = new Comm();
-            comm_req.CommName = "MSG";
-            MessageSend msg = new MessageSend();
-            msg.Adress = Address;
-            msg.Sender = Winlogin;
-            msg.Message = text;
+            Comm comm_req = new Comm
+            {
+                CommName = "MSG"
+            };
+            MessageSend msg = new MessageSend
+            {
+                Adress = Address,
+                Sender = Winlogin,
+                Message = text
+            };
             comm_req.Body = msg;
             string json = JsonConvert.SerializeObject(comm_req);
             webSocket.Send(json);
@@ -102,17 +108,21 @@ namespace Messenger
 
         internal void GetClients()
         {
-            Comm comm_req = new Comm();
-            comm_req.CommName = "GETCL";
-            comm_req.Body = new Client() { UserName = this.Winlogin };
+            Comm comm_req = new Comm
+            {
+                CommName = "GETCL",
+                Body = new Client() { UserName = this.Winlogin }
+            };
             string json = JsonConvert.SerializeObject(comm_req);
             webSocket.Send(json);
         }
 
         internal void GetDialog()
         {
-            Comm comm_req = new Comm();
-            comm_req.CommName = "GETDLG";
+            Comm comm_req = new Comm
+            {
+                CommName = "GETDLG"
+            };
             //TODO сформировать команду
             string json = JsonConvert.SerializeObject(comm_req);
             webSocket.Send(json);
