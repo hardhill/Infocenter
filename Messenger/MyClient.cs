@@ -60,6 +60,7 @@ namespace Messenger
             webSocket.Error += new EventHandler<SuperSocket.ClientEngine.ErrorEventArgs>(WebSocket_Error);
             webSocket.Opened += WebSocket_Opened;
             webSocket.MessageReceived += WebSocket_MessageReceived;
+            
         }
 
        
@@ -163,6 +164,20 @@ namespace Messenger
             webSocket.Close();
         }
 
+        public void RestartTry()
+        {
+            webSocket.Close();
+            while (true)
+            {
+                if (webSocket.State == WebSocketState.Closed)
+                {
+                    webSocket.Open();
+                    break;
+                }
+                Thread.Sleep(500);
+            }
+
+        }
 
         //процессор приема сообщений
         private string ControllerCommandIn(string value)

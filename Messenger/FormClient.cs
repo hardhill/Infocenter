@@ -8,6 +8,7 @@ using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -21,6 +22,7 @@ namespace Messenger
 
         //текущий пользователь сообщателя
         ContactUser CurrentContactUser;
+        SecretForm secretForm;
 
         public frmClient()
         {
@@ -65,14 +67,20 @@ namespace Messenger
         private void MyClient_OnChangeContactList(List<ContactUser> contacts)
         {
             this.lstContacts.BeginInvoke((MethodInvoker)(delegate {
-
-                this.Text = String.Format("{0} {1} {2}", myClient.Contactuser.Fa, myClient.Contactuser.Im, myClient.Contactuser.Ot);
-                lstContacts.Items.Clear();
-                foreach (var cont in contacts)
+                if (myClient.Contactuser != null)
                 {
-                    lstContacts.Items.Add(cont);
+                    this.Text = String.Format("{0} {1} {2}", myClient.Contactuser.Fa, myClient.Contactuser.Im, myClient.Contactuser.Ot);
+                    lstContacts.Items.Clear();
+                    foreach (var cont in contacts)
+                    {
+                        lstContacts.Items.Add(cont);
+                    }
+                    lstContacts.SelectedIndex = lstContacts.Items.Count > 0 ? 0 : -1;
                 }
-                lstContacts.SelectedIndex = lstContacts.Items.Count>0?0:-1;
+                else
+                {
+                    MessageBox.Show("Вы не прошли авторизацию.", "Внимание!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
 
             }));
             
@@ -112,7 +120,7 @@ namespace Messenger
         {
             //выбор клиента в списке
            var idx = lstContacts.SelectedIndex;
-           lblContact.Text = lstContacts.Items[idx].ToString();
+           lblContact.Text = "Адресат: "+lstContacts.Items[idx].ToString();
            CurrentContactUser = lstContacts.Items[idx] as ContactUser;
             //переключение на диалог
             lstDialog.Items.Clear();
@@ -135,17 +143,9 @@ namespace Messenger
             myClient.GetClients();
         }
 
-        private void txtFindCont_TextChanged(object sender, EventArgs e)
-        {
-            //поиск в контактах
-        }
+        
 
-        //временно
-        private void cb_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            myClient.Winlogin = cb.Text;
-            myClient.StartClient();
-        }
+        
 
         private void frmClient_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -158,6 +158,26 @@ namespace Messenger
             {
                 bSend_Click(sender, e);
             }
+        }
+
+        private void frmClient_Load(object sender, EventArgs e)
+        {
+            var name = WindowsIdentity.GetCurrent().Name;
+            myClient.Winlogin = name.Substring(name.IndexOf('\\')+1);
+            myClient.StartClient();
+        }
+
+        private void mnuChangeUser_Click(object sender, EventArgs e)
+        {
+            
+             secretForm = new SecretForm();
+            if (secretForm.ShowDialog() == DialogResult.OK)
+            {
+                myClient.Winlogin = secretForm.textBox1.Text;
+                myClient.RestartTry();
+
+            }
+            
         }
     }
 }
