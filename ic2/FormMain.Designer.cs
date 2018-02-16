@@ -39,6 +39,7 @@
             this.mnuStatCurrent = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuCloseProgramm = new System.Windows.Forms.ToolStripMenuItem();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.contextMenuStrip2.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -118,6 +119,11 @@
             this.mnuCloseProgramm.Text = "Закрыть Информцентр";
             this.mnuCloseProgramm.Click += new System.EventHandler(this.mnuCloseProgramm_Click);
             // 
+            // timer1
+            // 
+            this.timer1.Interval = 2000;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -151,6 +157,7 @@
         private System.Windows.Forms.ToolStripMenuItem mnuStatCurrent;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem editContactToolStripMenuItem;
+        private System.Windows.Forms.Timer timer1;
     }
 }
 

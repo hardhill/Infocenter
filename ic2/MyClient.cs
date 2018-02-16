@@ -165,12 +165,23 @@ namespace ic2
 
         public void RestartTry()
         {
-            webSocket.Close();
+            if (webSocket.State != WebSocketState.Closed)
+            {
+                webSocket.Close();
+            }
             while (true)
             {
-                if (webSocket.State == WebSocketState.Closed)
+                if (!this.Active)
                 {
-                    webSocket.Open();
+                    try
+                    {
+                        webSocket.Open();
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("Try connecting fail...");
+                        webSocket.Close();
+                    }
                     break;
                 }
                 Thread.Sleep(500);

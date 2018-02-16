@@ -211,7 +211,7 @@ namespace ic2
             this.MinimumSize = new System.Drawing.Size(520, 300);
             this.Name = "FormMessage";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Сообщения";
+            this.Text = "Сообщения (нет соединения)";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMessage_FormClosing_1);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FormMessage_FormClosed);
             this.Load += new System.EventHandler(this.FormMessage_Load);

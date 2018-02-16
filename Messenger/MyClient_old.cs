@@ -11,7 +11,7 @@ using WebSocket4Net;
 
 namespace Messenger
 {
-    class MyClient
+    class MyClient_old
     {
         public delegate void CloseSocket(object sender,EventArgs e);
         public delegate void DataRecieved(object sender, DataReceivedEventArgs e);
@@ -44,7 +44,7 @@ namespace Messenger
         public string Winlogin { get { return _username; } set { _username = value; } }
         public ContactUser Contactuser { get { return _contactuser; }  }
 
-        public MyClient(string uri,string protocol)
+        public MyClient_old(string uri,string protocol)
         {
             this.url = uri;
             this.protocol = protocol;
@@ -176,12 +176,23 @@ namespace Messenger
 
         public void RestartTry()
         {
-            webSocket.Close();
+            if (webSocket.State != WebSocketState.Closed)
+            {
+                webSocket.Close();
+            }
             while (true)
             {
-                if (webSocket.State == WebSocketState.Closed)
+                if (!this.Active)
                 {
-                    webSocket.Open();
+                    try
+                    {
+                        webSocket.Open();
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("Try connecting fail...");
+                        webSocket.Close();
+                    }
                     break;
                 }
                 Thread.Sleep(500);

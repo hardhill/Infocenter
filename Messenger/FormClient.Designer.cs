@@ -32,6 +32,8 @@
             this.pnlContact = new System.Windows.Forms.Panel();
             this.lstContacts = new System.Windows.Forms.ListBox();
             this.pnlFindCont = new System.Windows.Forms.Panel();
+            this.mnuSpecial = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.mnuChangeUser = new System.Windows.Forms.ToolStripMenuItem();
             this.label2 = new System.Windows.Forms.Label();
             this.bGetContacts = new System.Windows.Forms.Button();
             this.pnlMessages = new System.Windows.Forms.Panel();
@@ -42,14 +44,13 @@
             this.txtMessage = new System.Windows.Forms.TextBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
-            this.mnuSpecial = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.mnuChangeUser = new System.Windows.Forms.ToolStripMenuItem();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.pnlContact.SuspendLayout();
             this.pnlFindCont.SuspendLayout();
+            this.mnuSpecial.SuspendLayout();
             this.pnlMessages.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
-            this.mnuSpecial.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlContact
@@ -83,6 +84,23 @@
             this.pnlFindCont.Name = "pnlFindCont";
             this.pnlFindCont.Size = new System.Drawing.Size(300, 47);
             this.pnlFindCont.TabIndex = 0;
+            // 
+            // mnuSpecial
+            // 
+            this.mnuSpecial.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuChangeUser});
+            this.mnuSpecial.Name = "mnuSpecial";
+            this.mnuSpecial.Size = new System.Drawing.Size(223, 26);
+            // 
+            // mnuChangeUser
+            // 
+            this.mnuChangeUser.Name = "mnuChangeUser";
+            this.mnuChangeUser.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.F12)));
+            this.mnuChangeUser.Size = new System.Drawing.Size(222, 22);
+            this.mnuChangeUser.Text = "UserChange";
+            this.mnuChangeUser.Visible = false;
+            this.mnuChangeUser.Click += new System.EventHandler(this.mnuChangeUser_Click);
             // 
             // label2
             // 
@@ -180,22 +198,10 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "Диалог";
             // 
-            // mnuSpecial
+            // timer1
             // 
-            this.mnuSpecial.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mnuChangeUser});
-            this.mnuSpecial.Name = "mnuSpecial";
-            this.mnuSpecial.Size = new System.Drawing.Size(223, 48);
-            // 
-            // mnuChangeUser
-            // 
-            this.mnuChangeUser.Name = "mnuChangeUser";
-            this.mnuChangeUser.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
-            | System.Windows.Forms.Keys.F12)));
-            this.mnuChangeUser.Size = new System.Drawing.Size(222, 22);
-            this.mnuChangeUser.Text = "UserChange";
-            this.mnuChangeUser.Visible = false;
-            this.mnuChangeUser.Click += new System.EventHandler(this.mnuChangeUser_Click);
+            this.timer1.Interval = 1000;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // frmClient
             // 
@@ -208,18 +214,18 @@
             this.MinimumSize = new System.Drawing.Size(520, 300);
             this.Name = "frmClient";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Сообщения";
+            this.Text = "Сообщения (нет соединения)";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmClient_FormClosing);
             this.Load += new System.EventHandler(this.frmClient_Load);
             this.pnlContact.ResumeLayout(false);
             this.pnlFindCont.ResumeLayout(false);
             this.pnlFindCont.PerformLayout();
+            this.mnuSpecial.ResumeLayout(false);
             this.pnlMessages.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
-            this.mnuSpecial.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -242,6 +248,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ContextMenuStrip mnuSpecial;
         private System.Windows.Forms.ToolStripMenuItem mnuChangeUser;
+        public System.Windows.Forms.Timer timer1;
     }
 }
 

@@ -151,17 +151,26 @@ namespace ic2
             myClient.OnChangeContactList += MyClient_OnChangeContactList;
             myClient.OnChangeDialogList += MyClient_OnChangeDialogList;
             myClient.OnOpenedClient += MyClient_OnOpenedClient;
+            myClient.OnCloseSocket += MyClient_OnCloseSocket;
             try
             {
                 var name = WindowsIdentity.GetCurrent().Name;
                 myClient.Winlogin = name.Substring(name.IndexOf('\\') + 1);
-
-                myClient.StartClient();
+                //запуск клиента по таймеру
+                timer1.Enabled = true;
+                
             }
             catch (Exception)
             {
 
             }
+        }
+
+        private void MyClient_OnCloseSocket(object sender, EventArgs e)
+        {
+            this.BeginInvoke((MethodInvoker)(delegate {
+                formMessage.Text = "Сообщения (нет соединения)";
+            }));
         }
 
         private void MyClient_OnOpenedClient(object sender, EventArgs e)
@@ -266,6 +275,14 @@ namespace ic2
         private void editContactToolStripMenuItem_Click(object sender, EventArgs e)
         {
             RunOurPeople();
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            if (!myClient.Active)
+            {
+                myClient.RestartTry();
+            }
         }
     }
 

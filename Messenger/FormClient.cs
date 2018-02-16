@@ -18,7 +18,7 @@ namespace Messenger
 {
     public partial class frmClient : Form
     {
-        private MyClient myClient;
+        private MyClient_old myClient;
 
         //текущий пользователь сообщателя
         ContactUser CurrentContactUser;
@@ -31,16 +31,25 @@ namespace Messenger
             InitializeComponent();
             string server = ConfigurationManager.ConnectionStrings["Server"].ConnectionString;
             
-            myClient = new MyClient(server, "");
+            myClient = new MyClient_old(server, "");
             CurrentContactUser = new ContactUser();
             myClient.OnErrorClient += MyClient_OnErrorClient;
             myClient.OnMessageRecievedClient += MyClient_OnMessageRecievedClient;
             myClient.OnChangeContactList += MyClient_OnChangeContactList;
             myClient.OnChangeDialogList += MyClient_OnChangeDialogList;
             myClient.OnOpenedClient += MyClient_OnOpenedClient;
+            myClient.OnCloseSocket += MyClient_OnCloseSocket;
 
             
-            //myClient.StartClient();
+
+            
+        }
+
+        private void MyClient_OnCloseSocket(object sender, EventArgs e)
+        {
+            this.BeginInvoke((MethodInvoker)(delegate {
+                this.Text = "Сообщения (нет соединения)";
+            }));
             
         }
 
@@ -164,7 +173,8 @@ namespace Messenger
         {
             var name = WindowsIdentity.GetCurrent().Name;
             myClient.Winlogin = name.Substring(name.IndexOf('\\')+1);
-            myClient.StartClient();
+            timer1.Enabled = true;
+            //myClient.StartClient();
         }
 
         private void mnuChangeUser_Click(object sender, EventArgs e)
@@ -178,6 +188,14 @@ namespace Messenger
 
             }
             
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            if (!myClient.Active)
+            {
+                myClient.RestartTry();
+            }
         }
     }
 }
