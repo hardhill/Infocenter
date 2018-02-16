@@ -222,7 +222,7 @@ namespace ic2
                     contacts = JsonConvert.DeserializeObject<List<ContactUser>>(comm.Body.ToString());
                     //исключить из списка контактов себя самого
                     contacts = VerifyContacts(contacts, Winlogin);
-                    OnChangeContactList(contacts);
+                    OnChangeContactList?.Invoke(contacts);
                     break;
                 default:
                     StopClient();
@@ -242,12 +242,7 @@ namespace ic2
 
        
 
-        private class MessageSend
-        {
-            public string Adress { get; set; }
-            public string Sender { get; set; }
-            public string Message { get; set; }
-        }
+       
 
         internal void Free()
         {

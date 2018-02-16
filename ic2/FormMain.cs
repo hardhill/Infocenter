@@ -200,7 +200,7 @@ namespace ic2
                 {
                     if (myClient.Contactuser != null)
                     {
-                        this.Text = String.Format("{0} {1} {2}", myClient.Contactuser.Fa, myClient.Contactuser.Im, myClient.Contactuser.Ot);
+                        formMessage.Text = String.Format("{0} {1} {2}", myClient.Contactuser.Fa, myClient.Contactuser.Im, myClient.Contactuser.Ot);
                         formMessage.lstContacts.Items.Clear();
                         foreach (var cont in contacts)
                         {
@@ -236,8 +236,11 @@ namespace ic2
                 };
                 if (comm_resp.CommName == "MSG")
                 {
-
-                    this.SetBalloonTip("Вам пришло сообщение");
+                    MessageSend msg = JsonConvert.DeserializeObject<MessageSend>(comm_resp.Body.ToString());
+                    if (msg.Sender != myClient.Winlogin)
+                    {
+                        this.SetBalloonTip("Вам пришло сообщение\r\n"+"От:"+msg.Sender);
+                    }
                 }
 
             }

@@ -310,11 +310,14 @@ namespace ChatServ
             appServer.Broadcast(sessions, message, sendFeedback: feedBack);
         }
 
-        public string GetAllUsers()
+        public List<string> GetAllUsers()
         {
-            string value = "";
-
-            return value;
+            List<string> lst = new List<string>();
+            foreach(var cnt in contacts)
+            {
+                lst.Add(cnt.Winlogin);
+            }
+            return lst;
         }
 
         private class Comm

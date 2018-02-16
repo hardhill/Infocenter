@@ -92,6 +92,13 @@ namespace ChatServ
             myServer.Stop();
         }
 
-        
+        private void bClients_Click(object sender, EventArgs e)
+        {
+            
+            FormList formList = new FormList();
+            formList.lstClients.Items.AddRange(myServer.GetAllUsers().ToArray());
+            formList.ShowDialog();
+            
+        }
     }
 }

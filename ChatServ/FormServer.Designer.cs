@@ -33,12 +33,14 @@
             this.bStart = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
             this.Memo1 = new System.Windows.Forms.TextBox();
+            this.bClients = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.bClients);
             this.panel1.Controls.Add(this.bStop);
             this.panel1.Controls.Add(this.bStart);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
@@ -49,7 +51,7 @@
             // 
             // bStop
             // 
-            this.bStop.Location = new System.Drawing.Point(337, 12);
+            this.bStop.Location = new System.Drawing.Point(93, 12);
             this.bStop.Name = "bStop";
             this.bStop.Size = new System.Drawing.Size(75, 23);
             this.bStop.TabIndex = 4;
@@ -87,6 +89,16 @@
             this.Memo1.Size = new System.Drawing.Size(424, 233);
             this.Memo1.TabIndex = 1;
             // 
+            // bClients
+            // 
+            this.bClients.Location = new System.Drawing.Point(337, 12);
+            this.bClients.Name = "bClients";
+            this.bClients.Size = new System.Drawing.Size(75, 23);
+            this.bClients.TabIndex = 5;
+            this.bClients.Text = "Clients";
+            this.bClients.UseVisualStyleBackColor = true;
+            this.bClients.Click += new System.EventHandler(this.bClients_Click);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -112,6 +124,7 @@
         private System.Windows.Forms.Button bStart;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.TextBox Memo1;
+        private System.Windows.Forms.Button bClients;
     }
 }
 

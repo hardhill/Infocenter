@@ -40,7 +40,8 @@ namespace ic2
 
         private void FormMessage_Load(object sender, EventArgs e)
         {
-            
+            //запросить контакты принудительно
+            formMain.myClient.GetClients();
         }
 
         private void FormMessage_FormClosed(object sender, FormClosedEventArgs e)
