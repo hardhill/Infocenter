@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ic2
+namespace ic2.Models
 {
     public class Dialoge
     {

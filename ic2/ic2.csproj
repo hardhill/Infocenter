@@ -145,6 +145,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="dbContext.cs" />
+    <Compile Include="Models\Comm.cs" />
     <Compile Include="Models\Dialoge.cs" />
     <Compile Include="FormMain.cs">
       <SubType>Form</SubType>

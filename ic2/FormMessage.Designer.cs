@@ -237,16 +237,16 @@ namespace ic2
         private System.Windows.Forms.Panel pnlFindCont;
         private System.Windows.Forms.Panel pnlMessages;
         public System.Windows.Forms.ListBox lstContacts;
-        private System.Windows.Forms.ListBox lstDialog;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.TextBox txtMessage;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button bSend;
         private System.Windows.Forms.Button bGetContacts;
-        private System.Windows.Forms.Label lblContact;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ContextMenuStrip mnuSpecial;
         private System.Windows.Forms.ToolStripMenuItem mnuChangeUser;
+        public ListBox lstDialog;
+        public Label lblContact;
     }
 }

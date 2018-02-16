@@ -11,7 +11,7 @@ using WebSocket4Net;
 
 namespace ic2
 {
-    class MyClient
+    public class MyClient
     {
         public delegate void CloseSocket(object sender, EventArgs e);
         public delegate void DataRecieved(object sender, DataReceivedEventArgs e);
@@ -202,7 +202,7 @@ namespace ic2
                     //исключить из списка контактов себя самого
                     contacts = VerifyContacts(contacts, Winlogin);
                     //инициировать событие
-                    OnChangeContactList(contacts);
+                    OnChangeContactList?.Invoke(contacts);
                     break;
                 case "MSG":
                     MessageSend msg = JsonConvert.DeserializeObject<MessageSend>(comm.Body.ToString());
@@ -240,11 +240,7 @@ namespace ic2
             return lstCont;
         }
 
-        private class Comm
-        {
-            public string CommName { get; set; }
-            public object Body { get; set; }
-        }
+       
 
         private class MessageSend
         {
