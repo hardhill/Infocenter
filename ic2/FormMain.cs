@@ -140,31 +140,7 @@ namespace ic2
             }
         }
 
-        private void FormMain_Load(object sender, EventArgs e)
-        {
-            web.IsWebBrowserContextMenuEnabled = false;
-            string server = ConfigurationManager.ConnectionStrings["Server"].ConnectionString;
-            myClient = new MyClient(server, "");
-            CurrentContactUser = new ContactUser();
-            myClient.OnErrorClient += MyClient_OnErrorClient;
-            myClient.OnMessageRecievedClient += MyClient_OnMessageRecievedClient;
-            myClient.OnChangeContactList += MyClient_OnChangeContactList;
-            myClient.OnChangeDialogList += MyClient_OnChangeDialogList;
-            myClient.OnOpenedClient += MyClient_OnOpenedClient;
-            myClient.OnCloseSocket += MyClient_OnCloseSocket;
-            try
-            {
-                var name = WindowsIdentity.GetCurrent().Name;
-                myClient.Winlogin = name.Substring(name.IndexOf('\\') + 1);
-                //запуск клиента по таймеру
-                timer1.Enabled = true;
-                
-            }
-            catch (Exception)
-            {
-
-            }
-        }
+       
 
         private void MyClient_OnCloseSocket(object sender, EventArgs e)
         {
@@ -248,7 +224,7 @@ namespace ic2
                     MessageSend msg = JsonConvert.DeserializeObject<MessageSend>(comm_resp.Body.ToString());
                     if (msg.Sender != myClient.Winlogin)
                     {
-                        this.SetBalloonTip("Вам пришло сообщение\r\n"+"От:"+msg.Sender);
+                        this.SetBalloonTip("Вам пришло сообщение\r\n"+"От: "+msg.Sender);
                     }
                 }
 
@@ -258,6 +234,32 @@ namespace ic2
         private void MyClient_OnErrorClient(object sender, ErrorEventArgs e)
         {
            //
+        }
+
+        private void FormMain_Load(object sender, EventArgs e)
+        {
+            web.IsWebBrowserContextMenuEnabled = false;
+            string server = ConfigurationManager.ConnectionStrings["Server"].ConnectionString;
+            myClient = new MyClient(server, "");
+            CurrentContactUser = new ContactUser();
+            myClient.OnErrorClient += MyClient_OnErrorClient;
+            myClient.OnMessageRecievedClient += MyClient_OnMessageRecievedClient;
+            myClient.OnChangeContactList += MyClient_OnChangeContactList;
+            myClient.OnChangeDialogList += MyClient_OnChangeDialogList;
+            myClient.OnOpenedClient += MyClient_OnOpenedClient;
+            myClient.OnCloseSocket += MyClient_OnCloseSocket;
+            try
+            {
+                var name = WindowsIdentity.GetCurrent().Name;
+                myClient.Winlogin = name.Substring(name.IndexOf('\\') + 1);
+                //запуск клиента по таймеру
+                timer1.Enabled = true;
+
+            }
+            catch (Exception)
+            {
+
+            }
         }
 
         private void FormMain_FormClosed(object sender, FormClosedEventArgs e)

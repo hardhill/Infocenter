@@ -65,6 +65,7 @@ namespace ChatServ
         private void MyServer_OnStopServer(DateTime dt)
         {
             Memo1.AppendText(dt.ToString("yyyy-MM-dd HH:mm:ss.fff\t") + "Server stoped\r\n");
+            Memo1.BackColor = Color.Salmon;
         }
 
         private void MyServer_OnErrorStartServer(string error)
@@ -75,6 +76,7 @@ namespace ChatServ
         private void MyServer_OnStartServer(DateTime dt)
         {
             Memo1.AppendText(dt.ToString("yyyy-MM-dd HH:mm:ss.fff") + "\tserver started!\r\n");
+            Memo1.BackColor = Color.LightGreen;
         }
 
         private void MyServer_OnErrorSetupInit(string error)

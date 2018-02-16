@@ -29,11 +29,11 @@
         private void InitializeComponent()
         {
             this.panel1 = new System.Windows.Forms.Panel();
+            this.bClients = new System.Windows.Forms.Button();
             this.bStop = new System.Windows.Forms.Button();
             this.bStart = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
             this.Memo1 = new System.Windows.Forms.TextBox();
-            this.bClients = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
@@ -48,6 +48,16 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(424, 48);
             this.panel1.TabIndex = 3;
+            // 
+            // bClients
+            // 
+            this.bClients.Location = new System.Drawing.Point(337, 12);
+            this.bClients.Name = "bClients";
+            this.bClients.Size = new System.Drawing.Size(75, 23);
+            this.bClients.TabIndex = 5;
+            this.bClients.Text = "Clients";
+            this.bClients.UseVisualStyleBackColor = true;
+            this.bClients.Click += new System.EventHandler(this.bClients_Click);
             // 
             // bStop
             // 
@@ -80,6 +90,7 @@
             // 
             // Memo1
             // 
+            this.Memo1.BackColor = System.Drawing.Color.LightSalmon;
             this.Memo1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Memo1.Location = new System.Drawing.Point(0, 0);
             this.Memo1.Margin = new System.Windows.Forms.Padding(5);
@@ -88,16 +99,6 @@
             this.Memo1.ReadOnly = true;
             this.Memo1.Size = new System.Drawing.Size(424, 233);
             this.Memo1.TabIndex = 1;
-            // 
-            // bClients
-            // 
-            this.bClients.Location = new System.Drawing.Point(337, 12);
-            this.bClients.Name = "bClients";
-            this.bClients.Size = new System.Drawing.Size(75, 23);
-            this.bClients.TabIndex = 5;
-            this.bClients.Text = "Clients";
-            this.bClients.UseVisualStyleBackColor = true;
-            this.bClients.Click += new System.EventHandler(this.bClients_Click);
             // 
             // frmMain
             // 
