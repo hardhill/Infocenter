@@ -17,5 +17,6 @@ namespace ChatServ.Models
         public string Ot { get; set; }
         [BsonIgnoreIfDefault]
         public long Bday { get; set; }        //дата рождения
+        public string Avatar { get; set; }
     }
 }

@@ -14,6 +14,8 @@ namespace ic2.Models
         public string Im { get; set; }
         public string Ot { get; set; }
         public DateTime Bday { get; set; }
+        public string Avatar { get; set; }
+        public bool Active { get; set; }
 
         public override string ToString()
         {

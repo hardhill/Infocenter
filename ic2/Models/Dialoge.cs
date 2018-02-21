@@ -14,7 +14,7 @@ namespace ic2.Models
             string tt = DtMsg.ToString("HH:mm:ss");
             if (ComeIn)
             {
-                return String.Format("[{0}]{1}\t({2})", Author, MessageText, tt);
+                return String.Format("[{0}] {1}\t({2})", Author, MessageText, tt);
             }
             else
             {

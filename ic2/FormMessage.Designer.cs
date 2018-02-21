@@ -34,6 +34,8 @@ namespace ic2
             this.components = new System.ComponentModel.Container();
             this.pnlContact = new System.Windows.Forms.Panel();
             this.lstContacts = new System.Windows.Forms.ListBox();
+            this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
+            this.listContacts1 = new ic2.ListContacts();
             this.pnlFindCont = new System.Windows.Forms.Panel();
             this.mnuSpecial = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.mnuChangeUser = new System.Windows.Forms.ToolStripMenuItem();
@@ -47,22 +49,26 @@ namespace ic2
             this.txtMessage = new System.Windows.Forms.TextBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
+            this.pnlMenu = new System.Windows.Forms.Panel();
+            this.bMenu1 = new System.Windows.Forms.Button();
             this.pnlContact.SuspendLayout();
             this.pnlFindCont.SuspendLayout();
             this.mnuSpecial.SuspendLayout();
             this.pnlMessages.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
+            this.pnlMenu.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlContact
             // 
             this.pnlContact.Controls.Add(this.lstContacts);
+            this.pnlContact.Controls.Add(this.elementHost1);
             this.pnlContact.Controls.Add(this.pnlFindCont);
             this.pnlContact.Dock = System.Windows.Forms.DockStyle.Left;
             this.pnlContact.Location = new System.Drawing.Point(0, 0);
             this.pnlContact.Name = "pnlContact";
-            this.pnlContact.Size = new System.Drawing.Size(300, 360);
+            this.pnlContact.Size = new System.Drawing.Size(261, 370);
             this.pnlContact.TabIndex = 0;
             // 
             // lstContacts
@@ -71,9 +77,18 @@ namespace ic2
             this.lstContacts.FormattingEnabled = true;
             this.lstContacts.Location = new System.Drawing.Point(0, 47);
             this.lstContacts.Name = "lstContacts";
-            this.lstContacts.Size = new System.Drawing.Size(300, 313);
+            this.lstContacts.Size = new System.Drawing.Size(261, 223);
             this.lstContacts.TabIndex = 1;
             this.lstContacts.SelectedIndexChanged += new System.EventHandler(this.lstContacts_SelectedIndexChanged);
+            // 
+            // elementHost1
+            // 
+            this.elementHost1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.elementHost1.Location = new System.Drawing.Point(0, 270);
+            this.elementHost1.Name = "elementHost1";
+            this.elementHost1.Size = new System.Drawing.Size(261, 100);
+            this.elementHost1.TabIndex = 3;
+            this.elementHost1.Child = this.listContacts1;
             // 
             // pnlFindCont
             // 
@@ -84,7 +99,7 @@ namespace ic2
             this.pnlFindCont.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlFindCont.Location = new System.Drawing.Point(0, 0);
             this.pnlFindCont.Name = "pnlFindCont";
-            this.pnlFindCont.Size = new System.Drawing.Size(300, 47);
+            this.pnlFindCont.Size = new System.Drawing.Size(261, 47);
             this.pnlFindCont.TabIndex = 0;
             // 
             // mnuSpecial
@@ -115,7 +130,7 @@ namespace ic2
             // 
             // bGetContacts
             // 
-            this.bGetContacts.Location = new System.Drawing.Point(219, 12);
+            this.bGetContacts.Location = new System.Drawing.Point(175, 12);
             this.bGetContacts.Name = "bGetContacts";
             this.bGetContacts.Size = new System.Drawing.Size(75, 23);
             this.bGetContacts.TabIndex = 1;
@@ -129,9 +144,9 @@ namespace ic2
             this.pnlMessages.Controls.Add(this.panel2);
             this.pnlMessages.Controls.Add(this.panel1);
             this.pnlMessages.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlMessages.Location = new System.Drawing.Point(300, 0);
+            this.pnlMessages.Location = new System.Drawing.Point(261, 0);
             this.pnlMessages.Name = "pnlMessages";
-            this.pnlMessages.Size = new System.Drawing.Size(342, 360);
+            this.pnlMessages.Size = new System.Drawing.Size(336, 370);
             this.pnlMessages.TabIndex = 1;
             // 
             // lstDialog
@@ -140,7 +155,7 @@ namespace ic2
             this.lstDialog.FormattingEnabled = true;
             this.lstDialog.Location = new System.Drawing.Point(0, 47);
             this.lstDialog.Name = "lstDialog";
-            this.lstDialog.Size = new System.Drawing.Size(342, 249);
+            this.lstDialog.Size = new System.Drawing.Size(336, 259);
             this.lstDialog.TabIndex = 2;
             // 
             // panel2
@@ -149,9 +164,9 @@ namespace ic2
             this.panel2.Controls.Add(this.bSend);
             this.panel2.Controls.Add(this.txtMessage);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel2.Location = new System.Drawing.Point(0, 296);
+            this.panel2.Location = new System.Drawing.Point(0, 306);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(342, 64);
+            this.panel2.Size = new System.Drawing.Size(336, 64);
             this.panel2.TabIndex = 1;
             // 
             // lblContact
@@ -188,7 +203,7 @@ namespace ic2
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(342, 47);
+            this.panel1.Size = new System.Drawing.Size(336, 47);
             this.panel1.TabIndex = 0;
             // 
             // label1
@@ -200,15 +215,39 @@ namespace ic2
             this.label1.TabIndex = 0;
             this.label1.Text = "Диалог";
             // 
+            // pnlMenu
+            // 
+            this.pnlMenu.Controls.Add(this.bMenu1);
+            this.pnlMenu.Dock = System.Windows.Forms.DockStyle.Right;
+            this.pnlMenu.Location = new System.Drawing.Point(597, 0);
+            this.pnlMenu.Name = "pnlMenu";
+            this.pnlMenu.Size = new System.Drawing.Size(133, 370);
+            this.pnlMenu.TabIndex = 2;
+            // 
+            // bMenu1
+            // 
+            this.bMenu1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.bMenu1.FlatAppearance.BorderSize = 0;
+            this.bMenu1.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.bMenu1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.bMenu1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.bMenu1.Location = new System.Drawing.Point(0, 0);
+            this.bMenu1.Name = "bMenu1";
+            this.bMenu1.Size = new System.Drawing.Size(133, 47);
+            this.bMenu1.TabIndex = 3;
+            this.bMenu1.Text = "Инфоцентр";
+            this.bMenu1.UseVisualStyleBackColor = true;
+            // 
             // FormMessage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(642, 360);
+            this.ClientSize = new System.Drawing.Size(730, 370);
             this.Controls.Add(this.pnlMessages);
             this.Controls.Add(this.pnlContact);
-            this.MaximumSize = new System.Drawing.Size(720, 600);
-            this.MinimumSize = new System.Drawing.Size(520, 300);
+            this.Controls.Add(this.pnlMenu);
+            this.MaximumSize = new System.Drawing.Size(800, 600);
+            this.MinimumSize = new System.Drawing.Size(746, 300);
             this.Name = "FormMessage";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Сообщения (нет соединения)";
@@ -224,6 +263,7 @@ namespace ic2
             this.panel2.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            this.pnlMenu.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -248,5 +288,9 @@ namespace ic2
         private System.Windows.Forms.ToolStripMenuItem mnuChangeUser;
         public ListBox lstDialog;
         public Label lblContact;
+        private Panel pnlMenu;
+        private Button bMenu1;
+        private System.Windows.Forms.Integration.ElementHost elementHost1;
+        private ListContacts listContacts1;
     }
 }

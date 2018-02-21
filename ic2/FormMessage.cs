@@ -23,6 +23,7 @@ namespace ic2
         ContactUser CurrentContactUser;
         SecretForm secretForm;
         FormMain formMain;
+        private ListContacts wpfContacts;
         public FormMessage(FormMain formMain)
         {
             InitializeComponent();
@@ -42,6 +43,10 @@ namespace ic2
         {
             //запросить контакты принудительно
             formMain.myClient.GetClients();
+            wpfContacts = new ListContacts();
+            wpfContacts.wpfListContacts.Add(new ContactUser() { Fa = "Фамильянов", Im = "Имен" });
+            wpfContacts.ChangeList(null);
+            wpfContacts.UpdateLayout();
         }
 
         private void FormMessage_FormClosed(object sender, FormClosedEventArgs e)
@@ -55,7 +60,7 @@ namespace ic2
             if (secretForm.ShowDialog() == DialogResult.OK)
             {
                 formMain.myClient.Winlogin = secretForm.textBox1.Text;
-                formMain.myClient.RestartTry();
+               
 
             }
         }

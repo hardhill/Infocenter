@@ -240,6 +240,8 @@ namespace ic2
         {
             web.IsWebBrowserContextMenuEnabled = false;
             string server = ConfigurationManager.ConnectionStrings["Server"].ConnectionString;
+            string http = ConfigurationManager.ConnectionStrings["Http"].ConnectionString;
+            web.Navigate(http);
             myClient = new MyClient(server, "");
             CurrentContactUser = new ContactUser();
             myClient.OnErrorClient += MyClient_OnErrorClient;
